@@ -3,15 +3,21 @@ import dotenv from "dotenv"; //importing dotenv module. It gonna allow us to rea
 dotenv.config({path:"./config/config.env"}); //specifying the path of config file
 import {createServer} from "http"; //importing http module
 import {Server} from "socket.io"; //importing Server class from socketIO module
+import routes from "./routes/index.js";
+import errorHandler from "./middlewares/error/errorHandler.js";
+
 
 const app = express(); //creating an app from express's constructor
 const httpServer = createServer(app); //creating a http server that listens to server ports and gives a response back to the client.
 const io = new Server(httpServer);
 
-io.on("connection", (socket) => {
-    console.log(`${socket} connected!`);
-})
 
+app.use(express.json()); //it parses the request and we can reach informations from req.body
+app.use("/", routes); //our app's route schema
+app.use(errorHandler); //adding error handler middleware
+io.on("connection", (socket) => { //when connection comes from client, do this function.
+    console.log(`${socket} connected!`);
+});
 
 httpServer.listen(process.env.PORT, () => console.log(`Http server started at ${process.env.PORT}`));
 
