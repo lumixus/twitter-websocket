@@ -60,3 +60,16 @@ export const editProfile = async(req, res, next) =>
         return next(err);
     }
 }
+
+export const profile = async(req, res, next) =>
+{
+    try
+    {
+        const user = await User.findByPk(req.user.id);
+        res.status(200).json({success:true, data:user})
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
