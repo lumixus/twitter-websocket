@@ -6,9 +6,8 @@ import { comparePasswords, validateLoginInputs } from "../helpers/input/inputHel
 export const register = async(req, res, next) =>
 {
     try{
-        const {firstName, lastName, username, email, password, dateOfBirth} = req.body;
-        const user = await User.create({firstName:firstName, lastName:lastName, username:username, email:email, password:password, dateOfBirth:dateOfBirth});
-        // const token = createJwt(user);
+        const {firstName, lastName, username, email, password, dateOfBirth, role} = req.body;
+        const user = await User.create({firstName:firstName, lastName:lastName, username:username, email:email, password:password, dateOfBirth:dateOfBirth, role:role});
         sendJwtToCookie(user, res);
     }
     catch (err)

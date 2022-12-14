@@ -92,6 +92,10 @@ const User = sequelize.define("User",
             notEmpty:true,
         }
     },
+    role: {
+        type: DataTypes.STRING,
+        defaultValue:"user"
+    },
     location: {
         type: DataTypes.STRING,
     },
