@@ -44,3 +44,19 @@ export const logout = (req, res, next) =>
     .status(200)
     .json({success:true, message:"You successfully logged out"});
 }
+
+export const editProfile = async(req, res, next) =>
+{
+    try
+    {
+        const {user_id, location, biography, website} = req.body;
+        const user = await User.findByPk(user_id);
+        await user.update({location: location, biography:biography, website:website});
+        await user.save();
+        res.status(200).json({success:true, data:user,message:"Update process successfull"});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}

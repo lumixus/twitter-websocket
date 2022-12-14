@@ -37,3 +37,14 @@ export const adminAccess = async (req, res, next) =>
     }
     next();
 } 
+
+export const profileOwnerAccess = async(req, res, next) =>
+{
+    const {user_id} = req.body;
+    const user = await User.findByPk(user_id);
+    if(user.id != req.user.id)
+    {
+        return next(new CustomError(401, "You are not authorized to access this route"));
+    }
+    next();
+}
