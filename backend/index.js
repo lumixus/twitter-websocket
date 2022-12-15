@@ -5,6 +5,7 @@ import {createServer} from "http"; //importing http module
 import {Server} from "socket.io"; //importing Server class from socketIO module
 import routes from "./routes/index.js";
 import errorHandler from "./middlewares/error/errorHandler.js";
+import fileUpload from "express-fileupload";
 
 
 const app = express(); //creating an app from express's constructor
@@ -13,6 +14,7 @@ const io = new Server(httpServer);
 
 
 app.use(express.json()); //it parses the request and we can reach informations from req.body
+app.use(fileUpload({limits: {fileSize:5*1024*1024}})); //file upload middleware
 app.use("/", routes); //our app's route schema
 app.use(errorHandler); //adding error handler middleware
 io.on("connection", (socket) => { //when connection comes from client, do this function.

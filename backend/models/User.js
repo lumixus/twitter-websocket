@@ -92,6 +92,10 @@ const User = sequelize.define("User",
             notEmpty:true,
         }
     },
+    profilePicture: {
+        type: DataTypes.STRING,
+        defaultValue: "default.jpg"
+    },
     role: {
         type: DataTypes.STRING,
         defaultValue:"user"

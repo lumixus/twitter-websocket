@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import {sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
 import CustomError from "../helpers/error/CustomError.js";
 import { comparePasswords, validateLoginInputs } from "../helpers/input/inputHelpers.js";
+import path from "path";
 
 export const register = async(req, res, next) =>
 {
@@ -70,6 +71,36 @@ export const profile = async(req, res, next) =>
     }
     catch(err)
     {
+        return next(err);
+    }
+}
+
+export const uploadPhoto = async(req, res, next) =>
+{
+    try
+    {
+        if(!req.files)
+        return next(new CustomError(400, "You did not provide an image to upload"));
+        const file = req.files.file //the name of file input = file
+        // let uploadPath = path.join(path.dirname(require.main.filename), "/public/uploads", file.name);
+        // let uploadPath = path.join(require.main.filename,"/public/uploads", file.name);
+        let uploadPath = path.join(path.dirname("index.js"), "/public/uploads", file.name);
+        const allowedMimetypes = ["image/png", "image/jpg", "image/jpeg"];
+        if(!allowedMimetypes.includes(file.mimetype))
+        return next(new CustomError(400, "Unsupported file type"));
+        file.mv(uploadPath, function(err)
+        {
+            if(err)
+            return next(err);
+        });
+        const user = await User.findByPk(req.user.id);
+        user.profilePicture = file.name;
+        await user.save();
+        res.status(200).json({success:true, message:"Profile Photo Uploaded"});
+
+    }
+    catch(err)
+    { 
         return next(err);
     }
 }
