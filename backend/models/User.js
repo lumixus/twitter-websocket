@@ -1,6 +1,7 @@
 import sequelize from "../helpers/database/dbConnection.js";
 import { DataTypes } from "sequelize";
 import bcryptjs from "bcryptjs";
+import { hashPassword } from "../helpers/database/modelHelpers.js";
 
 const User = sequelize.define("User",
 {
@@ -125,13 +126,21 @@ const User = sequelize.define("User",
     blocked: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
-    }
+    },
+    resetPasswordToken: {
+        type:DataTypes.STRING,
+        defaultValue:null
+    },
+    resetPasswordTokenExpires: {
+        type:DataTypes.DATE,
+        defaultValue:null
+    },
 });
 
 User.addHook("beforeCreate", function(user)
 {
-    const salt = bcryptjs.genSaltSync(10);
-    const hash = bcryptjs.hashSync(user.password, salt);
+
+    const hash = hashPassword(user.password);
     user.password = hash;
 });
 

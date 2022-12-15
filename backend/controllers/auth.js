@@ -3,6 +3,8 @@ import {sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
 import CustomError from "../helpers/error/CustomError.js";
 import { comparePasswords, validateLoginInputs } from "../helpers/input/inputHelpers.js";
 import path from "path";
+import { createResetPasswordToken, hashPassword } from "../helpers/database/modelHelpers.js";
+import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
 
 export const register = async(req, res, next) =>
 {
@@ -101,6 +103,56 @@ export const uploadPhoto = async(req, res, next) =>
     }
     catch(err)
     { 
+        return next(err);
+    }
+}
+
+export const forgotPassword = async(req, res, next) =>
+{
+    try
+    {
+        const {email} = req.body;
+        const user = await User.findOne({where:{email:email}});
+        if(!user)
+        {
+            return next(new CustomError(500, "There is no user with that email"));
+        }
+        createResetPasswordToken(user, next);
+        const url = `http://localhost:8080/auth/resetpassword?resetPasswordToken=${user.resetPasswordToken}`;
+        const mailOptions = {
+            from: process.env.SMTP_USER,
+            to: email,
+            subject: "About reset password",
+            html : `<a href='${url}'>Link</a>`
+        };
+        mailHelper(mailOptions);
+        res.status(200).json({success:true, message:`Reset password link sent to ${email}`});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+export const resetPassword = async(req,res,next) =>
+{
+    try
+    {
+        const {resetPasswordToken} = req.query;
+        const {password} = req.body;
+        const user = await User.findOne({where: {resetPasswordToken:resetPasswordToken}});
+        // console.log(user);
+        if(!user)
+        return next(new CustomError(500, "There is no user with that reset password token"));
+        const hash = hashPassword(password);
+        console.log("hashladı");
+        user.password = hash;
+        await user.save();
+        res.status(200).json({success:true, message: "Password change successfull"});
+
+    }   
+    catch(err)
+    {
         return next(err);
     }
 }
