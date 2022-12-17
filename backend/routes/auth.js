@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login,logout,editProfile,profile,uploadPhoto,forgotPassword,resetPassword } from "../controllers/auth.js";
+import { register, login,logout,editProfile,profile,uploadPhoto,forgotPassword,resetPassword,changePassword,deactiveAccount } from "../controllers/auth.js";
 import { isAuth,profileOwnerAccess } from "../middlewares/auth/auth.js";
 import { isUserExist } from "../middlewares/database/queryHelpers.js";
 
@@ -13,4 +13,7 @@ router.get("/profile", isAuth, profile);
 router.post("/upload", isAuth, uploadPhoto);
 router.post("/forgotpassword", forgotPassword);
 router.put("/resetpassword", resetPassword);
+router.put("/passwordchange", isAuth, changePassword);
+router.get("/deactive", isAuth, deactiveAccount);
+//şifre güncelleme, hesabı kapatma
 export default router;

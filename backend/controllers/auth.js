@@ -68,7 +68,7 @@ export const profile = async(req, res, next) =>
 {
     try
     {
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findOne({where: {isActive:true, id:req.user.id}});
         res.status(200).json({success:true, data:user})
     }
     catch(err)
@@ -148,6 +148,41 @@ export const resetPassword = async(req,res,next) =>
         await user.save();
         res.status(200).json({success:true, message: "Password change successfull"});
     }   
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+export const changePassword = async(req, res, next) =>
+{
+    try
+    {
+        const {password} = req.body;
+        const user = await User.findByPk(req.user.id);
+        await user.update({password: hashPassword(password)});
+        console.log(user.password);
+        res.status(200).json({success:true, message: "Your password has been changed"});
+        // logout(); //After password changing, fresh login.
+    }
+    catch(err)
+    {
+        return next(err);
+    }    
+}
+
+export const deactiveAccount = async(req, res, next) =>
+{
+    try
+    {
+        const user = await User.findOne({where: {isActive:true, id:req.user.id}});
+        if(!user)
+        {
+            return next(new CustomError(400, "Your profile already deactived"));
+        }
+        await user.update({isActive:false});
+        res.status(200).json({success:true, message:"Your account deactivated"});
+    }
     catch(err)
     {
         return next(err);

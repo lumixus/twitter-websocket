@@ -5,7 +5,7 @@ import {getMentionsByTweet, createMention,deleteMention} from "../controllers/me
 const router = express.Router();
 router.post("/", isAuth, getMentionsByTweet);
 router.post("/create", [isAuth, isTweetExist], createMention);
-router.post("/delete", [isAuth, isMentionExist], deleteMention);
+router.put("/delete", [isAuth, isMentionExist], deleteMention);
 
 
 export default router;
