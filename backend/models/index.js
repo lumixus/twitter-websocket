@@ -23,3 +23,10 @@ Mention.belongsTo(User, {
         allowNull:false
     }
 });
+
+
+
+export {Mention, Tweet, User}
+
+
+
