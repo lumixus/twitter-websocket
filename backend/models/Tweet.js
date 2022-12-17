@@ -34,13 +34,12 @@ const Tweet = sequelize.define("Tweet", {
     }
 });
 
-Tweet.belongsTo(User, {
-    foreignKey: {
-        allowNull:false
-    }
-});
+
+
 
 
 
 await sequelize.sync().then(()=> console.log("Tweet sync done")).catch(err=>console.log(err));
+
+
 export default Tweet;
