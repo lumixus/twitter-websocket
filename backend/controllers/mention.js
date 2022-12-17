@@ -1,4 +1,4 @@
-import { Mention } from "../models/Mention.js";
+import Mention from "../models/Mention.js";
 
 export const getMentionsByTweet = async(req, res, next) =>
 {

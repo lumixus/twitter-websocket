@@ -140,11 +140,13 @@ export const resetPassword = async(req,res,next) =>
     {
         const {resetPasswordToken} = req.query;
         const {password} = req.body;
-        const user = await User.findOne({where: {resetPasswordToken:resetPasswordToken}});
+        const user = await User.findOne({where: {resetPasswordToken:resetPasswordToken}}); //check date expires too.
         if(!user)
         return next(new CustomError(500, "There is no user with that reset password token"));
         const hash = hashPassword(password);
         user.password = hash;
+        user.resetPasswordToken = null;
+        user.resetPasswordTokenExpires = null;
         await user.save();
         res.status(200).json({success:true, message: "Password change successfull"});
     }   

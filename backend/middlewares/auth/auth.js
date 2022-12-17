@@ -3,7 +3,7 @@ import { getToken, isTokenProvided } from "../../helpers/jwt/tokenHelpers.js";
 import jsonwebtoken from "jsonwebtoken";
 import User from "../../models/User.js";
 import Tweet from "../../models/Tweet.js";
-import { Mention } from "../../models/Mention.js";
+import Mention from "../../models/Mention.js";
 
 export const isAuth = (req, res, next) =>
 {

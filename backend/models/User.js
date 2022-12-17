@@ -2,6 +2,8 @@ import sequelize from "../helpers/database/dbConnection.js";
 import { DataTypes } from "sequelize";
 import bcryptjs from "bcryptjs";
 import { hashPassword } from "../helpers/database/modelHelpers.js";
+import Tweet from "./Tweet.js";
+import Mention from "./Mention.js";
 
 const User = sequelize.define("User",
 {
@@ -143,6 +145,28 @@ User.addHook("beforeCreate", function(user)
     const hash = hashPassword(user.password);
     user.password = hash;
 });
+
+User.addHook("afterUpdate", async function(user)
+{
+    if(user.changed("isActive"))
+    {
+        //functionhelpers
+        const tweets = await Tweet.findAll({where: {isVisible:true, UserId:user.id}});
+        tweets.forEach(async tweet=>
+            {
+                await tweet.update({isVisible:user.isActive});
+            });
+        
+        const mentions = await Mention.findAll({where: {isVisible:true,UserId:user.id}});
+        mentions.forEach(async mention =>
+            {
+                await mention.update({isVisible:user.isActive});
+            });
+    }
+});
+
+// User.addHook("before") password hashing with hooks
+
 
 await sequelize.sync().then(()=> console.log("User sync done")).catch(err=>console.log(err));
 // pay attention is active gonna have a default value

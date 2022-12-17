@@ -3,7 +3,7 @@ import sequelize from "../helpers/database/dbConnection.js";
 import Tweet from "./Tweet.js";
 import User from "./User.js";
 
-export const Mention = sequelize.define("Mention", {
+const Mention = sequelize.define("Mention", {
     content: {
         type: DataTypes.STRING,
         allowNull:true,
@@ -42,3 +42,4 @@ Mention.belongsTo(User, {
 });
 
 await sequelize.sync().then(()=> console.log("Mention Sync")).catch(err => console.log(err));
+export default Mention;
