@@ -141,15 +141,12 @@ export const resetPassword = async(req,res,next) =>
         const {resetPasswordToken} = req.query;
         const {password} = req.body;
         const user = await User.findOne({where: {resetPasswordToken:resetPasswordToken}});
-        // console.log(user);
         if(!user)
         return next(new CustomError(500, "There is no user with that reset password token"));
         const hash = hashPassword(password);
-        console.log("hashladı");
         user.password = hash;
         await user.save();
         res.status(200).json({success:true, message: "Password change successfull"});
-
     }   
     catch(err)
     {

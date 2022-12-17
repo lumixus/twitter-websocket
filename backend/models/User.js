@@ -144,6 +144,6 @@ User.addHook("beforeCreate", function(user)
     user.password = hash;
 });
 
-await sequelize.sync().then(()=> console.log("Sync done")).catch(err=>console.log(err));
+await sequelize.sync().then(()=> console.log("User sync done")).catch(err=>console.log(err));
 // pay attention is active gonna have a default value
 export default User;
