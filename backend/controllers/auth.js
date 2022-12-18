@@ -3,7 +3,7 @@ import {sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
 import CustomError from "../helpers/error/CustomError.js";
 import { comparePasswords, validateLoginInputs } from "../helpers/input/inputHelpers.js";
 import path from "path";
-import { createResetPasswordToken, hashPassword } from "../helpers/database/modelHelpers.js";
+import { createEmailConfirmationToken, createResetPasswordToken, hashPassword } from "../helpers/database/modelHelpers.js";
 import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
 
 export const register = async(req, res, next) =>
@@ -11,6 +11,16 @@ export const register = async(req, res, next) =>
     try{
         const {firstName, lastName, username, email, password, dateOfBirth, role} = req.body;
         const user = await User.create({firstName:firstName, lastName:lastName, username:username, email:email, password:password, dateOfBirth:dateOfBirth, role:role});
+        const emailConfirmationToken = createEmailConfirmationToken(user,next);
+        console.log(emailConfirmationToken);
+        const url = `http://localhost:8080/auth/emailconfirmation?confirmToken=${user.emailConfirmationToken}`;
+        const mailOptions = {
+            from: process.env.SMTP_USER,
+            to:email,
+            subject: "Email confirmation",
+            html: `<h1>This<a href='${url}'> link </a>provides a email confirmation</h1>`
+        };
+        mailHelper(mailOptions);
         sendJwtToCookie(user, res);
     }
     catch (err)
@@ -162,8 +172,11 @@ export const changePassword = async(req, res, next) =>
     {
         const {password} = req.body;
         const user = await User.findByPk(req.user.id);
-        await user.update({password: hashPassword(password)});
-        console.log(user.password);
+        console.log("user ı buldu");
+        // await user.update({password: hashPassword(password)});
+        console.log("girmek üzere");
+        await user.update({password: password});
+        // console.log(user.password);
         res.status(200).json({success:true, message: "Your password has been changed"});
         // logout(); //After password changing, fresh login.
     }
@@ -184,6 +197,23 @@ export const deactiveAccount = async(req, res, next) =>
         }
         await user.update({isActive:false});
         res.status(200).json({success:true, message:"Your account deactivated"});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+export const emailConfirmation = async(req, res, next) =>
+{
+    try
+    {
+        const {confirmToken} = req.query;
+        const user = await User.findOne({where: {emailConfirmationToken:confirmToken}}); //and expires date
+        if(!user)
+        return next(new CustomError(500, "There is no user with that confirm token"));
+        await user.update({isVerified:true, emailConfirmationToken:null,emailConfirmationTokenExpires:null});
+        res.status(200).json({success:true, message:"Your email has been verified"});
     }
     catch(err)
     {

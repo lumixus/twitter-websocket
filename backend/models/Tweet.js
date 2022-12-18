@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../helpers/database/dbConnection.js";
-import User from "./User.js";
+// import User from "./User.js";
 
 const Tweet = sequelize.define("Tweet", {
     content: {
@@ -34,12 +34,11 @@ const Tweet = sequelize.define("Tweet", {
     }
 });
 
-Tweet.belongsTo(User, {
-    foreignKey: {
-        allowNull:false
-    }
-});
-
+// Tweet.belongsTo(User, {
+//     foreignKey: {
+//         allowNull:false
+//     }
+// });
 
 
 await sequelize.sync().then(()=> console.log("Tweet sync done")).catch(err=>console.log(err));

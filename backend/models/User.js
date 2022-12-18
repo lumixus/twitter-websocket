@@ -2,7 +2,7 @@ import sequelize from "../helpers/database/dbConnection.js";
 import { DataTypes } from "sequelize";
 import bcryptjs from "bcryptjs";
 import { hashPassword } from "../helpers/database/modelHelpers.js";
-import Tweet from "./Tweet.js";
+// import Tweet from "./Tweet.js";
 import Mention from "./Mention.js";
 
 const User = sequelize.define("User",
@@ -137,6 +137,18 @@ const User = sequelize.define("User",
         type:DataTypes.DATE,
         defaultValue:null
     },
+    emailConfirmationToken:{
+        type:DataTypes.STRING,
+        defaultValue:null
+    },
+    emailConfirmationTokenExpires: {
+        type:DataTypes.STRING,
+        defaultValue:null
+    },
+    isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue:false,
+    }
 });
 
 User.addHook("beforeCreate", function(user)
@@ -165,8 +177,16 @@ User.addHook("afterUpdate", async function(user)
     }
 });
 
-// User.addHook("before") password hashing with hooks
-
+// User.addHook("beforeUpdate", async function(user)
+// {
+//     if(user.changed("password"))
+//     {
+//         const hash = hashPassword(user.password);
+//         user.password = hash;
+//     }
+    
+//     await user.save();
+// })
 
 await sequelize.sync().then(()=> console.log("User sync done")).catch(err=>console.log(err));
 // pay attention is active gonna have a default value

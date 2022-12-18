@@ -13,7 +13,7 @@ export const isAuth = (req, res, next) =>
     }
     const {JWT_SECRET_KEY} = process.env;
     const token = getToken(req);
-    jsonwebtoken.verify(token, JWT_SECRET_KEY, (err, decoded)=>
+    jsonwebtoken.verify(token, JWT_SECRET_KEY, async(err, decoded)=>
     {
         if(err)
         {
@@ -25,6 +25,11 @@ export const isAuth = (req, res, next) =>
                 id: decoded.id,
                 username: decoded.username,
             };
+            const user = await User.findOne({where:{username:req.user.username}});
+            if(!user)
+            {
+                return next(new CustomError(401, "There is no username in the database"));
+            }
             return next();
         }
     });

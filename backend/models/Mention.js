@@ -30,16 +30,16 @@ const Mention = sequelize.define("Mention", {
     }
 });
 
-Mention.belongsTo(Tweet, {
-    foreignKey: {
-        allowNull:false
-    }
-});
-Mention.belongsTo(User, {
-    foreignKey: {
-        allowNull:false
-    }
-});
+// Mention.belongsTo(Tweet, {
+//     foreignKey: {
+//         allowNull:false
+//     }
+// });
+// Mention.belongsTo(User, {
+//     foreignKey: {
+//         allowNull:false
+//     }
+// });
 
 await sequelize.sync().then(()=> console.log("Mention Sync")).catch(err => console.log(err));
 export default Mention;
