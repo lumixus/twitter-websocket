@@ -1,18 +1,23 @@
-// import { DataTypes } from "sequelize";
-// import sequelize from "../helpers/database/dbConnection.js";
-// import Tweet from "./Tweet.js";
-// import User from "./User.js";
+import { DataTypes } from "sequelize";
+import sequelize from "../helpers/database/dbConnection.js";
 
-// export const Favorite = sequelize.define("Favorite", {
-//     createdAt: {
-//         type: DataTypes.DATE,
-//         allowNull:false
-//     },
-// });
+const Favorite = sequelize.define("Favorite", {
+    UserId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    TweetId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    MentionId: {
+        type: DataTypes.INTEGER
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
+});
 
-
-// Favorite.hasMany(User);
-// Favorite.belongsTo(Tweet);
-
-
+export default Favorite
 
