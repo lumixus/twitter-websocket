@@ -93,8 +93,6 @@ export const uploadPhoto = async(req, res, next) =>
         if(!req.files)
         return next(new CustomError(400, "You did not provide an image to upload"));
         const file = req.files.file //the name of file input = file
-        // let uploadPath = path.join(path.dirname(require.main.filename), "/public/uploads", file.name);
-        // let uploadPath = path.join(require.main.filename,"/public/uploads", file.name);
         let uploadPath = path.join(path.dirname("index.js"), "/public/uploads", file.name);
         const allowedMimetypes = ["image/png", "image/jpg", "image/jpeg"];
         if(!allowedMimetypes.includes(file.mimetype))
@@ -120,7 +118,10 @@ export const forgotPassword = async(req, res, next) =>
 {
     try
     {
-        //if there is a user in req. He will not access to this route
+        if(req.headers.authorization) //if there is no token in the header, user did not login.
+        {
+            return next(new CustomError(400, "You can not access to this route because you already logged in."));
+        }
         const {email} = req.body;
         const user = await User.findOne({where:{email:email}});
         if(!user)
@@ -153,7 +154,7 @@ export const resetPassword = async(req,res,next) =>
         const user = await User.findOne({where: {resetPasswordToken:resetPasswordToken}}); //check date expires too.
         if(!user)
         return next(new CustomError(500, "There is no user with that reset password token"));
-        await user.update({password:password, resetPasswordToken:null, resetPasswordTokenExpires:null});
+        await user.update({password:password, resetPasswordToken:null, resetPasswordTokenExpires:null})
         res.status(200).json({success:true, message: "Password change successfull"});
     }   
     catch(err)
@@ -166,6 +167,7 @@ export const changePassword = async(req, res, next) =>
 {
     try
     {
+        //need to fresh login to access this route
         const {oldPassword,password} = req.body;
         const user = await User.findByPk(req.user.id);
         if(!comparePasswords(oldPassword, user.password))
@@ -174,7 +176,7 @@ export const changePassword = async(req, res, next) =>
         }
         await user.update({password: password});
         res.status(200).json({success:true, message: "Your password has been changed"});
-        // logout(); //After password changing, fresh login.
+        //after changing, logout and want to fresh login
     }
     catch(err)
     {
@@ -186,10 +188,15 @@ export const deactiveAccount = async(req, res, next) =>
 {
     try
     {
+        const {password} = req.body;
         const user = await User.findOne({where: {isActive:true, id:req.user.id}});
         if(!user)
         {
             return next(new CustomError(400, "Your profile already deactived"));
+        }
+        if(!comparePasswords(password, user.password))
+        {
+            return next(new CustomError(400, "Check your credentials"))
         }
         await user.update({isActive:false});
         res.status(200).json({success:true, message:"Your account deactivated"});

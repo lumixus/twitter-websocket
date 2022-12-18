@@ -14,7 +14,7 @@ router.post("/upload", isAuth, uploadPhoto);
 router.post("/forgotpassword", forgotPassword);
 router.put("/resetpassword", resetPassword);
 router.put("/passwordchange", isAuth, changePassword);
-router.get("/deactive", isAuth, deactiveAccount);
+router.post("/deactive", isAuth, deactiveAccount);
 router.get("/emailconfirmation", emailConfirmation);
 //şifre güncelleme, hesabı kapatma
 export default router;
