@@ -18,6 +18,16 @@ const Mention = sequelize.define("Mention", {
         type: DataTypes.STRING,
         allowNull:true
     },
+    UserId:
+    {
+        type: DataTypes.INTEGER,
+        allowNull:false
+    },
+    TweetId:
+    {
+        type: DataTypes.INTEGER,
+        allowNull:false
+    },
     createdAt : {
         type:DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -30,16 +40,6 @@ const Mention = sequelize.define("Mention", {
     }
 });
 
-// Mention.belongsTo(Tweet, {
-//     foreignKey: {
-//         allowNull:false
-//     }
-// });
-// Mention.belongsTo(User, {
-//     foreignKey: {
-//         allowNull:false
-//     }
-// });
 
 await sequelize.sync().then(()=> console.log("Mention Sync")).catch(err => console.log(err));
 export default Mention;

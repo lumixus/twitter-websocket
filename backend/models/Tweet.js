@@ -22,6 +22,10 @@ const Tweet = sequelize.define("Tweet", {
         defaultValue: DataTypes.NOW,
         allowNull:false
     },
+    UserId: {
+        type:DataTypes.INTEGER,
+        allowNull: false
+    },
     isVisible: {
         type:DataTypes.BOOLEAN,
         defaultValue: true,
@@ -34,12 +38,10 @@ const Tweet = sequelize.define("Tweet", {
     }
 });
 
-// Tweet.belongsTo(User, {
-//     foreignKey: {
-//         allowNull:false
-//     }
-// });
+
 
 
 await sequelize.sync().then(()=> console.log("Tweet sync done")).catch(err=>console.log(err));
+
+
 export default Tweet;

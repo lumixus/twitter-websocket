@@ -11,8 +11,7 @@ export const register = async(req, res, next) =>
     try{
         const {firstName, lastName, username, email, password, dateOfBirth, role} = req.body;
         const user = await User.create({firstName:firstName, lastName:lastName, username:username, email:email, password:password, dateOfBirth:dateOfBirth, role:role});
-        const emailConfirmationToken = createEmailConfirmationToken(user,next);
-        console.log(emailConfirmationToken);
+        createEmailConfirmationToken(user,next);
         const url = `http://localhost:8080/auth/emailconfirmation?confirmToken=${user.emailConfirmationToken}`;
         const mailOptions = {
             from: process.env.SMTP_USER,
@@ -121,6 +120,7 @@ export const forgotPassword = async(req, res, next) =>
 {
     try
     {
+        //if there is a user in req. He will not access to this route
         const {email} = req.body;
         const user = await User.findOne({where:{email:email}});
         if(!user)
@@ -153,11 +153,7 @@ export const resetPassword = async(req,res,next) =>
         const user = await User.findOne({where: {resetPasswordToken:resetPasswordToken}}); //check date expires too.
         if(!user)
         return next(new CustomError(500, "There is no user with that reset password token"));
-        const hash = hashPassword(password);
-        user.password = hash;
-        user.resetPasswordToken = null;
-        user.resetPasswordTokenExpires = null;
-        await user.save();
+        await user.update({password:password, resetPasswordToken:null, resetPasswordTokenExpires:null});
         res.status(200).json({success:true, message: "Password change successfull"});
     }   
     catch(err)
@@ -170,13 +166,13 @@ export const changePassword = async(req, res, next) =>
 {
     try
     {
-        const {password} = req.body;
+        const {oldPassword,password} = req.body;
         const user = await User.findByPk(req.user.id);
-        console.log("user ı buldu");
-        // await user.update({password: hashPassword(password)});
-        console.log("girmek üzere");
+        if(!comparePasswords(oldPassword, user.password))
+        {
+            return next(new CustomError(400, "Old password is not correct"));
+        }
         await user.update({password: password});
-        // console.log(user.password);
         res.status(200).json({success:true, message: "Your password has been changed"});
         // logout(); //After password changing, fresh login.
     }
