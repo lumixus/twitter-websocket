@@ -1,4 +1,6 @@
 import CustomError from "../../helpers/error/CustomError.js";
+import Mention from "../../models/Mention.js";
+import Tweet from "../../models/Tweet.js";
 import User from "../../models/User.js";
 
 export const isUserExist = async (req, res, next) => {
@@ -17,7 +19,6 @@ export const isUserExist = async (req, res, next) => {
   return next();
 };
 
-
 export const isTweetExist = async(req, res, next) =>
 {
     const {tweet_id} = req.body;
@@ -32,8 +33,6 @@ export const isTweetExist = async(req, res, next) =>
     }
     next();
 }
-
-
 
 export const isMentionExist = async(req, res, next) =>
 {

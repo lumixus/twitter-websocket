@@ -6,6 +6,7 @@ import { createEmailConfirmationToken, createResetPasswordToken } from "../helpe
 import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import Follow from "../models/Follow.js";
+import Bookmark from "../models/Bookmark.js";
 
 export const register = async(req, res, next) =>
 {
@@ -264,5 +265,18 @@ export const unfollow = async(req, res, next) =>
     catch(err)
     {
         return next(err);
+    }
+}
+
+export const bookmarks = async(req, res, next)=>
+{
+    try
+    {
+        const bookmarks = Bookmark.findAll({where:{UserId: req.user.id}});
+        res.status(200).json({success:true, data:bookmarks});
+    }
+    catch(err)
+    {
+
     }
 }
