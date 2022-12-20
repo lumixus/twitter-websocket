@@ -56,21 +56,6 @@ export const profileOwnerAccess = async(req, res, next) =>
     next();
 }
 
-export const isTweetExist = async(req, res, next) =>
-{
-    const {tweet_id} = req.body;
-    if(!tweet_id)
-    {
-        return next(new CustomError(400, "Mention must be belong to a tweet"));
-    }
-    const tweet = await Tweet.findByPk(tweet_id);
-    if(!tweet)
-    {
-        return next(new CustomError(400, "There is no tweet with that id"));
-    }
-    next();
-}
-
 export const getTweetOwnerAccess = async(req, res, next) =>
 {
     const {tweet_id} = req.body;
@@ -82,17 +67,6 @@ export const getTweetOwnerAccess = async(req, res, next) =>
     if(tweet.UserId != req.user.id)
     {
         return next(new CustomError(403, "You are not owner of this tweet"));
-    }
-    next();
-}
-
-export const isMentionExist = async(req, res, next) =>
-{
-    const {tweet_id, mention_id} = req.body;
-    const mention = await Mention.findOne({where:{TweetId:tweet_id, id: mention_id}});
-    if(!mention)
-    {
-        return next(new CustomError(400, "There is no mention with that id"));
     }
     next();
 }

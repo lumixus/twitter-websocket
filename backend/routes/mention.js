@@ -1,6 +1,7 @@
 import express from "express";
-import { isAuth, isTweetExist, isMentionExist} from "../middlewares/auth/auth.js";
+import { isAuth} from "../middlewares/auth/auth.js";
 import {getMentionsByTweet, createMention,deleteMention} from "../controllers/mention.js";
+import { isMentionExist, isTweetExist } from "../middlewares/database/queryHelpers.js";
 
 const router = express.Router();
 router.post("/", isAuth, getMentionsByTweet);

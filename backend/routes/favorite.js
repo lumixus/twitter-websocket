@@ -1,6 +1,7 @@
 import express from "express"
 import { favoriteMention, favoriteTweet, undoFavoriteMention, undoFavoriteTweet } from "../controllers/favorite.js";
-import { isAuth, isMentionExist, isTweetExist } from "../middlewares/auth/auth.js";
+import { isAuth } from "../middlewares/auth/auth.js";
+import { isTweetExist, isMentionExist } from "../middlewares/database/queryHelpers.js";
 const router = express.Router();
 
 router.post("/tweet", [isAuth, isTweetExist], favoriteTweet);

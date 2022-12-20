@@ -1,6 +1,7 @@
 import express from "express";
-import {isAuth, isMentionExist, isTweetExist} from "../middlewares/auth/auth.js";
+import {isAuth} from "../middlewares/auth/auth.js";
 import {reTweet, reTweetMention,undoReTweet,undoReTweetMention} from "../controllers/retweet.js";
+import { isTweetExist, isMentionExist } from "../middlewares/database/queryHelpers.js";
 
 const router = express.Router();
 

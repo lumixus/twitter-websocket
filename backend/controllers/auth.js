@@ -5,6 +5,7 @@ import { comparePasswords, validateInputs } from "../helpers/input/inputHelpers.
 import { createEmailConfirmationToken, createResetPasswordToken } from "../helpers/database/modelHelpers.js";
 import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
+import Follow from "../models/Follow.js";
 
 export const register = async(req, res, next) =>
 {
@@ -221,6 +222,44 @@ export const removePicture = async (req, res, next) =>
         const user = await User.findByPk(req.user.id);
         await user.update({profilePicture:"default.png"});
         res.status(200).json({success:true, message:"Your profile picture has been deleted"});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+export const follow = async (req, res, next) =>
+{
+    try
+    {
+        const {user_id} = req.body;
+        const user = await User.findByPk(user_id);
+        if(await Follow.findOne({where: {FollowerId:user.id, FollowingId: req.user.id}}))
+        return next(new CustomError(400, "You are already following this user"));
+        if(user.id == req.user.id)
+        return next(new CustomError(400, "You can not follow yourself"));
+        const follow = await Follow.create({FollowerId: user.id , FollowingId:req.user.id});
+        res.status(200).json({success:true, data:follow});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+export const unfollow = async(req, res, next) =>
+{
+    try
+    {
+        const {user_id} = req.body;
+        const user = await User.findByPk(user_id);
+        if(!await Follow.findOne({where: {FollowerId:user.id, FollowingId: req.user.id}}))
+        return next(new CustomError(400, "You are already not following this user"));
+        if(user.id == req.user.id)
+        return next(new CustomError(400, "You can not unfollow yourself"));
+        await Follow.destroy({where:{ FollowerId: user.id , FollowingId:req.user.id}});
+        res.status(200).json({success:true, message:"Unfollow successfull"});
     }
     catch(err)
     {
