@@ -1,9 +1,9 @@
 import User from "../models/User.js";
 import {sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
 import CustomError from "../helpers/error/CustomError.js";
-import { comparePasswords, validateLoginInputs } from "../helpers/input/inputHelpers.js";
+import { comparePasswords, validateInputs, validateLoginInputs } from "../helpers/input/inputHelpers.js";
 import path from "path";
-import { createEmailConfirmationToken, createResetPasswordToken, hashPassword } from "../helpers/database/modelHelpers.js";
+import { createEmailConfirmationToken, createResetPasswordToken } from "../helpers/database/modelHelpers.js";
 import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
 
 export const register = async(req, res, next) =>
@@ -33,7 +33,7 @@ export const login = async(req, res, next) =>
     try
     {
         const {username, password} = req.body;
-        if(!validateLoginInputs(username, password))
+        if(!validateInputs(username, password))
         {
             return next(new CustomError(500, "Please provide an username and password"));
         }
@@ -170,13 +170,13 @@ export const changePassword = async(req, res, next) =>
         //need to fresh login to access this route
         const {oldPassword,password} = req.body;
         const user = await User.findByPk(req.user.id);
+        if(!validateInputs(oldPassword, password))
+        return next(new CustomError(400, "Old password and new password can not be null"));
         if(!comparePasswords(oldPassword, user.password))
-        {
-            return next(new CustomError(400, "Old password is not correct"));
-        }
+        return next(new CustomError(400, "Old password is not correct"));
         await user.update({password: password});
+        logout(req, res ,next); //fresh login
         res.status(200).json({success:true, message: "Your password has been changed"});
-        //after changing, logout and want to fresh login
     }
     catch(err)
     {
