@@ -11,7 +11,8 @@ const Favorite = sequelize.define("Favorite", {
         allowNull: false
     },
     MentionId: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull:true
     },
     createdAt: {
         type: DataTypes.DATE,

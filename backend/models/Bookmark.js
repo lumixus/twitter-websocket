@@ -16,6 +16,7 @@ const Bookmark = sequelize.define("Bookmark", {
     },
     MentionId:{
         type:DataTypes.INTEGER,
+        allowNull:true
     }
 });
 
