@@ -213,3 +213,17 @@ export const emailConfirmation = async(req, res, next) =>
         return next(err);
     }
 }
+
+export const removePicture = async (req, res, next) =>
+{
+    try
+    {
+        const user = await User.findByPk(req.user.id);
+        await user.update({profilePicture:"default.png"});
+        res.status(200).json({success:true, message:"Your profile picture has been deleted"});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
