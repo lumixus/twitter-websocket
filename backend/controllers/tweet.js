@@ -1,13 +1,15 @@
 import {Tweet, Mention} from "../models/index.js";
-
+import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
+import CustomError from "../helpers/error/CustomError.js";
 export const createTweet = async(req, res, next) =>
 {
     try
     {
         const {content} = req.body;
-        // const image = req.files.file; // the json and form-data can not send at the same time in postman, we need to frontend form.
-        //Will be refactored.
-        const tweet = await Tweet.create({content:content,UserId:req.user.id});
+        const fileName = imageUploader(req, next);
+        if(content == null && fileName == null)
+        return next(new CustomError(400, "Content or File must be provided"));
+        const tweet = await Tweet.create({content:content,UserId:req.user.id, image:fileName});
         res.status(200).json({success:true, data:tweet});
     }
     catch(err)
