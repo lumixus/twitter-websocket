@@ -7,6 +7,7 @@ import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import Follow from "../models/Follow.js";
 import Bookmark from "../models/Bookmark.js";
+import Favorite from "../models/Favorite.js";
 
 export const register = async(req, res, next) =>
 {
@@ -272,11 +273,24 @@ export const bookmarks = async(req, res, next)=>
 {
     try
     {
-        const bookmarks = Bookmark.findAll({where:{UserId: req.user.id}});
+        const bookmarks = await Bookmark.findAll({where:{UserId: req.user.id}});
         res.status(200).json({success:true, data:bookmarks});
     }
     catch(err)
     {
+        return next(err);
+    }
+}
 
+export const favorites = async(req, res, next) =>
+{
+    try
+    {
+        const favorites = await Favorite.findAll({where: {UserId:req.user.id}});
+        res.status(200).json({success:true, data:favorites});
+    }   
+    catch(err)
+    {
+        return next(err);
     }
 }

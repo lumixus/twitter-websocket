@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login,logout,editProfile,profile,uploadPhoto,forgotPassword,resetPassword,changePassword,deactiveAccount,emailConfirmation,removePicture,follow,unfollow,bookmarks } from "../controllers/auth.js";
+import { register, login,logout,editProfile,profile,uploadPhoto,forgotPassword,resetPassword,changePassword,deactiveAccount,emailConfirmation,removePicture,follow,unfollow,bookmarks,favorites } from "../controllers/auth.js";
 import { isAuth,profileOwnerAccess } from "../middlewares/auth/auth.js";
 import { isUserExist } from "../middlewares/database/queryHelpers.js";
 
@@ -20,4 +20,5 @@ router.get("/removepicture", isAuth, removePicture);
 router.post("/follow", [isAuth,isUserExist], follow);
 router.post("/unfollow", [isAuth,isUserExist], unfollow);
 router.get("/bookmarks", isAuth, bookmarks);
+router.get("/favorites", isAuth, favorites);
 export default router;
