@@ -7,83 +7,98 @@ import Bookmark from "./Bookmark.js";
 
 Tweet.belongsTo(User, {
     foreignKey: {
-        allowNull:false
-    }
+        allowNull:false,
+    },
+    onDelete:"CASCADE"
 });
 
 Mention.belongsTo(Tweet, {
     foreignKey: {
         allowNull:false
-    }
+    },
+    onDelete:"CASCADE"
 });
 
 Mention.belongsTo(User, {
     foreignKey: {
         allowNull:false
-    }
+    },
+    onDelete:"CASCADE"
 });
 
 Favorite.belongsToMany(Tweet, {
     foreignKey:{
         allowNull:false,
     },
-    through: "FavoriteUser"
+    through: "FavoriteUser",
+    onDelete:"CASCADE",
 });
 
 Favorite.belongsToMany(User, {
     foreignKey:{
         allowNull:false,
     },
-    through: "FavoriteTweet"
+    through: "FavoriteTweet",
+    onDelete:"CASCADE"
 });
 
 Favorite.belongsToMany(Mention, {
     foreignKey:{
         allowNull:false,
     },
-    through: "FavoriteMention"
+    through: "FavoriteMention",
+    onDelete:"CASCADE"
+
 });
 
 Retweet.belongsToMany(User, {
         foreignKey:{
             allowNull:false,
         },
-        through: "RetweetUser"
+        through: "RetweetUser",
+        onDelete:"CASCADE"
+
 });
 
 Retweet.belongsToMany(Mention, {
     foreignKey:{
         allowNull:false,
     },
-    through: "RetweetMention"
+    through: "RetweetMention",
+    onDelete:"CASCADE"
+
 });
 
 Retweet.belongsToMany(Tweet, {
     foreignKey:{
         allowNull:false,
     },
-    through:"RetweetTweet"
+    through:"RetweetTweet",
+    onDelete:"CASCADE"
 });
 
 Bookmark.belongsTo(User, {
         foreignKey:{
             allowNull:false
         },
-        through:"BookmarkUser"
+        through:"BookmarkUser",
+    onDelete:"CASCADE"
 });
 
 Bookmark.belongsTo(Tweet, {
     foreignKey:{
         allowNull:false
     },
-    through:"BookmarkTweet"
+    through:"BookmarkTweet",
+    onDelete:"CASCADE"
 });
 
 Bookmark.belongsTo(Mention, {
     foreignKey:{
         allowNull:false
     },
-    through:"BookmarkMention"
+    through:"BookmarkMention",
+    onDelete:"CASCADE"
 });
 
 export {Mention, Tweet, User, Favorite, Retweet, Bookmark}
