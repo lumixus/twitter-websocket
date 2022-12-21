@@ -39,7 +39,7 @@ export const deleteMention = async(req, res, next) =>
     {
         const {mention_id} = req.body;
         const mention = await Mention.findByPk(mention_id);
-        await mention.update({isVisible:false});
+        await mention.update({isVisible:false, hidByUser:true});
         res.status(200).json({success:true, message: "Your mention has been deleted"});
     }
     catch(err)

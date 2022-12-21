@@ -37,6 +37,10 @@ const Mention = sequelize.define("Mention", {
         type:DataTypes.BOOLEAN,
         defaultValue: true,
         allowNull:false
+    },
+    hidByUser: {
+        type:DataTypes.BOOLEAN,
+        defaultValue:false
     }
 });
 
