@@ -5,8 +5,8 @@ export const reTweet = async(req, res, next) =>
 {
     try
     {
-        const {tweet_id} = req.body;
-        const reTweet = await Retweet.create({TweetId:tweet_id, UserId: req.user.id});
+        const {tweet_id,content} = req.body;
+        const reTweet = await Retweet.create({TweetId:tweet_id, UserId: req.user.id, content:content});
         res.status(200).json({success:true, message: "Retweet successfull", data:reTweet});
     }
     catch(err)
@@ -19,8 +19,8 @@ export const reTweetMention = async(req, res, next) =>
 {
     try
     {
-        const {tweet_id, mention_id} = req.body;
-        const reTweet = await Retweet.create({TweetId:tweet_id, UserId: req.user.id, MentionId:mention_id});
+        const {tweet_id, mention_id, content} = req.body;
+        const reTweet = await Retweet.create({TweetId:tweet_id, UserId: req.user.id, MentionId:mention_id, content:content});
         res.status(200).json({success:true, message: "Retweet successfull", data:reTweet});
     }
     catch(err)

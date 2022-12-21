@@ -16,6 +16,11 @@ const Retweet = sequelize.define("Retweet", {
     },
     MentionId:{
         type:DataTypes.INTEGER,
+        allowNull:true
+    },
+    content: {
+        type:DataTypes.STRING,
+        allowNull:true
     }
 });
 
