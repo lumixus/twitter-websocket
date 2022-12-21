@@ -45,6 +45,10 @@ export const login = async(req, res, next) =>
         {
             return next(new CustomError(500, "Check your credentials"));
         }
+        if(user.isActive == false)
+        {
+            await user.update({isActive:true});
+        }
         sendJwtToCookie(user,res);    
     }
     catch(err)
@@ -193,6 +197,7 @@ export const deactiveAccount = async(req, res, next) =>
         }
         await user.update({isActive:false});
         res.status(200).json({success:true, message:"Your account deactivated"});
+        // logout(req, res,next);
     }
     catch(err)
     {

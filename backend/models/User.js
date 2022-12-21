@@ -163,14 +163,13 @@ User.addHook("afterUpdate", async function(user)
 {
     if(user.changed("isActive"))
     {
-        //functionhelpers
-        const tweets = await Tweet.findAll({where: {isVisible:true, UserId:user.id}});
+        const tweets = await Tweet.findAll({where: {hidByUser:false, UserId:user.id}}); //boş dizi geliyor
         tweets.forEach(async tweet=>
             {
                 await tweet.update({isVisible:user.isActive});
             });
         
-        const mentions = await Mention.findAll({where: {isVisible:true,UserId:user.id}});
+        const mentions = await Mention.findAll({where: {hidByUser:false,UserId:user.id}});
         mentions.forEach(async mention =>
             {
                 await mention.update({isVisible:user.isActive});
