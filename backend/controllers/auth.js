@@ -8,6 +8,8 @@ import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import Follow from "../models/Follow.js";
 import Bookmark from "../models/Bookmark.js";
 import Favorite from "../models/Favorite.js";
+import Tweet from "../models/Tweet.js";
+import Mention from "../models/Mention.js";
 
 export const register = async(req, res, next) =>
 {
@@ -85,7 +87,10 @@ export const profile = async(req, res, next) =>
     try
     {
         const user = await User.findOne({where: {isActive:true, id:req.user.id}});
-        res.status(200).json({success:true, data:user})
+        const tweets = await Tweet.findAll({where: {UserId: req.user.id, isVisible:true}});
+        const mentions = await Mention.findAll({where: {UserId: req.user.id, isVisible:true}});
+        const favorites = await Favorite.findAll({where:{UserId: req.user.id}});
+        res.status(200).json({success:true, user:user, tweets:tweets, mentions:mentions, favorites: favorites});
     }
     catch(err)
     {

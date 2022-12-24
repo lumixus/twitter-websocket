@@ -1,6 +1,7 @@
 import {Tweet, Mention} from "../models/index.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import CustomError from "../helpers/error/CustomError.js";
+import { Op } from "sequelize";
 export const createTweet = async(req, res, next) =>
 {
     try
