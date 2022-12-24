@@ -1,0 +1,30 @@
+.leftWrapper{
+    background-color: blue;
+    background-image: url(https://abs.twimg.com/sticky/illustrations/lohp_en_1302x955.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+
+.rightWrapper{
+    background-color: black;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+
+.rightWrapper > div{
+    width: 100%;
+    padding: 16px;
+}
+
+
+.mainTitle{
+    font-size: 4.5rem;
+    margin-bottom: 50px
+}
