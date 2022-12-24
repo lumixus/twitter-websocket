@@ -1,0 +1,26 @@
+.tweetCard{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+
+.profilePic{
+    width: 100px;
+    text-align: center;
+}
+
+.rightSide{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.topSide{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+

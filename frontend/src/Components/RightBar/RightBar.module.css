@@ -1,0 +1,8 @@
+.rightBar{
+    width: 100%;
+    position: relative;
+    top:0px;
+    right: 0px;
+    background-color: black;
+    border-left : 1px solid rgb(47, 51, 54)
+}

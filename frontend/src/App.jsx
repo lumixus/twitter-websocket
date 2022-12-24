@@ -1,14 +1,22 @@
 import './App.css';
-
 import React from 'react'
-import { Link } from 'react-router-dom';
+import LeftBar from './Components/LeftBar';
+import RightBar from './Components/RightBar';
+import TopNav from './Components/TopNav';
 
-const App = () => {
+const App = ({element}) => {
   return (
-    <div>
-
-      <Link className='btn btn-primary' to={"/login"}>Login</Link>
+    <>
+    <div className='wrapper'>
+    <LeftBar/>
+    <div className="mainWrapper">
+      <TopNav />
+      {element}
     </div>
+
+    <RightBar />
+      </div>
+    </>
   )
 }
 

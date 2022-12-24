@@ -1,0 +1,46 @@
+.main{
+    width: 100%;
+    margin-top: 20px;
+}
+
+.tweetEditor{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 0px 30px;
+    justify-content: space-between;
+}
+
+
+
+.tweetArea, .tweetArea > textarea{
+    width: 100% !important;
+}
+
+.tweetArea > textarea:focus{
+    outline: none;
+}
+
+.tweetArea > textarea{
+    background-color: black;
+    color:white;
+    font-size:20px;
+    border: none;
+    overflow: hidden;
+    resize: none;
+}
+
+
+
+.profilePic{
+    width: 100px;
+    text-align: center;
+}
+
+.tweetEditorBottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+

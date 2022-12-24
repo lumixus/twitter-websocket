@@ -1,0 +1,12 @@
+.topNav{
+    position: sticky;
+    top:0;
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    backdrop-filter: blur(12px);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+}

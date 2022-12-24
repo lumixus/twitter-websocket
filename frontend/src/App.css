@@ -1,0 +1,11 @@
+.mainWrapper{
+    min-width: 700px;
+    background-color: black;
+}
+
+.wrapper{
+    display: flex;
+    flex-direction: row;
+    color:white
+}
+

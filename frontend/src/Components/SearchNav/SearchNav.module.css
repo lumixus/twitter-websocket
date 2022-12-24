@@ -1,0 +1,10 @@
+.searchNav{
+    position: sticky;
+    top:0;
+    background-color: red;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    backdrop-filter: blur(12px);
+    background-color: black;
+}
