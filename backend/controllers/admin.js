@@ -41,3 +41,16 @@ export const unblockUser = async(req, res, next) =>
         return next(err);
     }
 }
+
+export const getAllUsers = async (req, res, next) =>
+{
+    try
+    {
+        const users = await User.findAll();
+        res.status(200).json({success:true, data:users});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}

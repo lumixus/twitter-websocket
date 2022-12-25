@@ -5,9 +5,10 @@ import tweetRoutes from "./tweet.js";
 import hashtagRoutes from "./hashtag.js";
 import express from "express";
 import { isAuth } from "../middlewares/auth/auth.js";
-import { search } from "../controllers/index.js";
+import { search,index } from "../controllers/index.js";
 
 const router = express.Router();
+router.get("/", isAuth, index);
 router.get("/search", isAuth, search);
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
