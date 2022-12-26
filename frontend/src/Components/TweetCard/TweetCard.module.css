@@ -11,6 +11,10 @@
     text-align: center;
 }
 
+.profilePic > img {
+    border-radius: 50px;
+}
+
 .rightSide{
     display: flex;
     flex-direction: column;

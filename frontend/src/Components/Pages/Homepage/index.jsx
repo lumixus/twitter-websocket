@@ -5,11 +5,14 @@ import styles from './Homepage.module.css'
 import axios from "axios"
 import { useEffect } from 'react'
 import { Button } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
 const Homepage = () => {
 
     const [tweets, setTweets] = useState([])
     const [tweetsLoading, setTweetsLoading] = useState(true)
+
+    const userState = useSelector((state) => state.user)
 
     const getTweets = async () => {
 
@@ -26,7 +29,7 @@ const Homepage = () => {
 
 
     useEffect(() => {
-        if(tweets.length == 0){
+        if(tweets.length === 0){
             getTweets()
         }
     }, [tweets])
@@ -44,11 +47,14 @@ const Homepage = () => {
 
   return (
     <div className={styles.main}>
+    {Object.keys(userState).length !== 0 ? 
+
 
         <div className={styles.tweetEditor}>
             <div className={styles.profilePic}>
             Image
             </div>
+
 
             <div className={styles.tweetArea}>
                 <textarea onChange={(e) => autoGrow(e)} rows={1} placeholder="What's happening?"></textarea>
@@ -62,12 +68,14 @@ const Homepage = () => {
                 </div>
             </div>
         </div>
-
+            : ""}
 
         <hr />
 
 
-        {tweetsLoading ? "Loading..." : tweets ? tweets.map(t => <TweetCard tweet={t} />) : null}
+        {tweetsLoading ? 
+        "Loading..." : 
+        tweets ? tweets.map(t => <TweetCard tweet={t} key={t.id} />) : null}
 
     </div>
   )

@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './TweetCard.module.css'
 import moment from "moment"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faEllipsis} from '@fortawesome/free-solid-svg-icons'
 
 
 const TweetCard = ({tweet}) => {
@@ -8,7 +10,7 @@ const TweetCard = ({tweet}) => {
     <>
     <div className={styles.tweetCard}>
         <div className={styles.profilePic}>
-            IMAGE
+            <img src="default_profile_normal.png" alt="" />
         </div>
         <div className={styles.rightSide}>
             <div className={styles.topSide}>
@@ -18,7 +20,9 @@ const TweetCard = ({tweet}) => {
                     <span style={{marginLeft:"5px"}}>·</span>
                     <span style={{marginLeft:"5px"}}>{moment(tweet.createdAt).fromNow()}</span>
                 </div>
-                <div>buttons</div>
+                <div>
+                    <FontAwesomeIcon icon={faEllipsis} />
+                </div>
             </div>
             <div>
                 {tweet.content}
