@@ -1,12 +1,12 @@
-import {Tweet, Mention} from "../models/index.js";
+import {Tweet, Mention, User} from "../models/index.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import CustomError from "../helpers/error/CustomError.js";
-import { Op } from "sequelize";
 import { createHashtag } from "./hashtag.js";
 export const createTweet = async(req, res, next) =>
 {
     try
     {
+        //tweet dönüyor
         const {content} = req.body;
         const fileName = imageUploader(req, next);
         if(content == null && fileName == null)
@@ -23,6 +23,7 @@ export const createTweet = async(req, res, next) =>
 
 export const getTweetById = async(req, res, next) =>
 {
+    //tweet dönüyor
     try
     {
         const {tweet_id} = req.body;
@@ -55,28 +56,3 @@ export const deleteTweet = async(req, res, next) =>
         return next(err);
     }
 }
-
-// export const trends = async (req, res, next) =>
-// {
-//     // try
-//     // {
-//     //     const tweets = await Tweet.findAll({where: {createdAt: {[Op.lt]: new Date(), [Op.gt]: new Date(new Date() - 24 * 60 * 60 * 1000)}}});
-//     //     const hashtags = [];
-//     //     for(var tweet of tweets)
-//     //     {
-//     //         console.log(typeof tweet);
-//     //         const temp = tweet.content.split(" ");
-//     //         for(var letter of temp)
-//     //         {
-//     //             console.log(typeof letter);
-//     //             if(letter.charAt(0) == '#')
-//     //             hashtags.push(letter);
-//     //         }
-//     //     }
-//     //     res.status(200).json({data:hashtags});
-//     // }
-//     // catch(err)
-//     // {
-//     //     return next(err);
-//     // }
-// }
