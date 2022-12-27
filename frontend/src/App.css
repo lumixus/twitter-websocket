@@ -1,5 +1,5 @@
 .mainWrapper{
-    min-width: 700px;
+    min-width: 600px;
     background-color: black;
 }
 
@@ -8,4 +8,3 @@
     flex-direction: row;
     color:white
 }
-
