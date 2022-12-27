@@ -4,9 +4,9 @@ import Tweet from "../models/Tweet.js";
 import User from "../models/User.js";
 import Follow from "../models/Follow.js";
 import sequelize from "../helpers/database/dbConnection.js";
+// import { exampleName } from "../helpers/database/modelHelpers.js";
 export const search = async(req, res, next) =>
 {
-    //tweet dönüyor
     const {search} = req.query;
     const users = await User.findAll({where:{username: {[Op.substring]: search}}});
     const tweets = await Tweet.findAll({where: {content:{[Op.substring]:search}}});
@@ -18,14 +18,15 @@ export const index = async (req, res, next) =>
 {
     try
     {
-        const data = [];
+        //too slow query
+        const followingUsers = [];
         const response = [];
         const following = await Follow.findAll({attributes:["FollowerId"], where: {FollowingId:req.user.id}});
         for(var follow of following)
         {
-            data.push(follow.FollowerId);
+            followingUsers.push(follow.FollowerId);
         }
-        const tweets = await Tweet.findAll({where: {UserId: {[Op.in]:data}}, order:sequelize.literal('createdAt desc')});
+        const tweets = await Tweet.findAll({attributes:["id", "content", "image", "createdAt", "UserId"], where: {UserId: {[Op.in]:followingUsers}}, order:sequelize.literal('createdAt desc')});
         for(var tweet of tweets)
         {
             const user = await User.findOne({attributes:["firstName", "lastName", "username"], where: {id:tweet.UserId}});

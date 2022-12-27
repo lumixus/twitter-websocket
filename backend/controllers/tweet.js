@@ -43,12 +43,6 @@ export const deleteTweet = async(req, res, next) =>
         const {tweet_id} = req.body;
         const tweet = await Tweet.findByPk(tweet_id);
         await tweet.update({isVisible: false, hidByUser:true});
-        //When a tweet deleted, the mentions belong to tweet will be deleted too.
-        const mentions = await Mention.findAll({where:{TweetId:tweet_id}});
-        mentions.forEach(mention =>
-            {
-                mention.update({isVisible:false});
-            });
         res.status(200).json({success:true, message:"Your tweet has been deleted"});
     }
     catch(err)

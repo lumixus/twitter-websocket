@@ -7,10 +7,6 @@ import Mention from "../../models/Mention.js";
 
 export const isAuth = (req, res, next) =>
 {
-    if(!isTokenProvided(req))
-    {
-        return next(new CustomError(500, "You have to provide a token to access this route"));
-    }
     const {JWT_SECRET_KEY} = process.env;
     const token = getToken(req);
     jsonwebtoken.verify(token, JWT_SECRET_KEY, async(err, decoded)=>

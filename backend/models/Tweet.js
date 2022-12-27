@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../helpers/database/dbConnection.js";
+import Mention from "./Mention.js";
 // import User from "./User.js";
 
 const Tweet = sequelize.define("Tweet", {
@@ -39,7 +40,17 @@ const Tweet = sequelize.define("Tweet", {
 });
 
 
-
+Tweet.addHook("beforeUpdate", async function(tweet)
+{
+    if(tweet.changed("isVisible"))
+    {
+        const mentions = await Mention.findAll({where:{TweetId:tweet.id}});
+        mentions.forEach(mention =>
+            {
+                mention.update({isVisible:tweet.isVisible});
+            });
+    }
+});
 
 await sequelize.sync().then(()=> console.log("Tweet sync done")).catch(err=>console.log(err));
 

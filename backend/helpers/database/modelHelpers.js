@@ -1,7 +1,6 @@
-import randomstring from "randomstring";
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
-
+import User from "../../models/User.js";
 
 export const createRandomToken = () =>
 {
@@ -46,3 +45,32 @@ export const hashPassword = (password) =>
     return hash;
 }
 
+// export const exampleName = async(tweets,next)=>
+// {
+//     //Beklemeden arrayını döndürüyor async işlemlerle ilgili bir durum var
+//     try
+//     {
+//         const response = [];
+//         for(var tweet of tweets)
+//         {
+//             const user = await User.findOne({attributes:["firstName", "lastName", "username"], where: {id:tweet.UserId}});
+//             const obj = {"tweet":tweet, "user":user};
+//             response.push(obj);
+//         }
+//         return response;
+//     }
+//     catch(err)
+//     {
+//         return next(err);
+//     }
+// }
+
+// {
+//     "firstName":"Tumer",
+//     "lastName": "Altunbas",
+//     "username" : "tumer3",
+//     "email":"tumeraltunbass3@gmail.com",
+//     "role":"user",
+//     "password" : "tumer1234",
+//     "dateOfBirth" : "2002-10-03"
+// }

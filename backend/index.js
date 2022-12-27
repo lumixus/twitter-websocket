@@ -8,6 +8,7 @@ import errorHandler from "./middlewares/error/errorHandler.js";
 import fileUpload from "express-fileupload";
 import limiter from "./middlewares/security/rateLimit.js";
 import cors from "cors"
+import cookieParser from "cookie-parser";
 
 
 const app = express(); //creating an app from express's constructor
@@ -15,6 +16,7 @@ const httpServer = createServer(app); //creating a http server that listens to s
 const io = new Server(httpServer);
 
 app.use(cors())
+app.use(cookieParser())
 app.use(express.json()); //it parses the request and we can reach informations from req.body
 app.use(fileUpload({limits: {fileSize:5*1024*1024}})); //file upload middleware
 app.use(limiter);

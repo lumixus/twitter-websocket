@@ -1,6 +1,6 @@
-import randomstring from "randomstring";
-import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
+import CustomError from "../error/CustomError.js";
+
 const createJwt = (user) =>
 {
     const {JWT_SECRET_KEY, JWT_EXPIRES} = process.env;
@@ -23,12 +23,12 @@ const sendJwtToCookie = (user, res) =>
 
 const isTokenProvided = (req) =>
 {
-    return req.headers.authorization;
+    return req.cookies.access_token;
 }
 
 const getToken = (req) =>
 {
-    return req.headers.authorization.split(" ")[1]; //[Bearer , tokenValue]
+    return req.cookies.access_token;
 }
 
 export {createJwt,sendJwtToCookie,isTokenProvided,getToken}
