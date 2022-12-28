@@ -1,21 +1,13 @@
-import React from 'react'
-import styles from './LoginFlow.module.css'
-import AppleLogin from 'react-apple-login';
 import { GoogleLogin } from '@react-oauth/google';
+import React from 'react'
+import AppleLogin from 'react-apple-login';
 import { Button } from 'react-bootstrap';
 import AppleIcon from '../SVGS/AppleIcon';
-import { useState } from 'react';
 
-const LoginFlow = () => {
-
-    const [id, setId] = useState('')
-
-
-
-
+const OnboardFlow = ({withInput = false}) => {
   return (
-    <div>
-            <GoogleLogin width={300}
+    <>
+    <GoogleLogin width={300}
                 onSuccess={credentialResponse => {
                   console.log(credentialResponse);
                 }}
@@ -58,18 +50,19 @@ const LoginFlow = () => {
                 Or
                 <hr width="120px" />
               </div>
-              <input className={styles.loginInput} onChange={(e) => setId(e)} type="text" placeholder='Phone, e-mail or username'/>
+              <Button style={{width:"300px"}}>
+                Signup with email or phone
+              </Button>
 
-              <div className={styles.nextButton}>
-                <Button variant='light'>Next</Button>
+              <div>
+
+              <Button style={{width:"300px", marginTop:"20px"}} variant='light'>
+                Login
+              </Button>
               </div>
 
-              <div className={styles.forgotButton}>
-                <Button>Forgot Password?</Button>
-              </div>
-
-    </div>
+    </>
   )
 }
 
-export default LoginFlow
+export default OnboardFlow

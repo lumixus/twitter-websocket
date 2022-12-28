@@ -1,0 +1,28 @@
+.notifyBanner{
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgb(29, 155, 240);
+    box-shadow: rgb(255 255 255 / 20%) 0px 0px 15px, rgb(255 255 255 / 15%) 0px 0px 3px 1px;
+    padding: 5px 15%;
+    color: white;
+}
+
+
+.infoText h4, .infoText p{
+    margin-bottom: 0px !important;
+}
+
+
+.infoText{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.buttons button{
+    margin: 0px 5px;
+    border-radius: 20px;
+}
+

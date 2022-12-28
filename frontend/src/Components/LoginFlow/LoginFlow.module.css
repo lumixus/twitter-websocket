@@ -1,0 +1,33 @@
+.loginInput{
+    width: 300px;
+    border-radius: 10px;
+    border: none;
+    padding: 12px 10px;
+    background-color: black;
+    border : 1px solid rgb(51, 54, 57);
+    color:white;
+    transition-duration:0.5s
+
+}
+
+
+.loginInput:focus{
+    outline: none;
+    border-color: rgb(29,155,240)
+}
+
+
+.nextButton button{
+    border-radius: 20px;
+    width: 300px;
+    margin-top:10px;
+}
+
+.forgotButton button{
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(51, 54, 57, 1);
+    width: 300px;
+    margin-top: 10px;
+    border-radius: 20px;
+    font-weight: bold;
+}

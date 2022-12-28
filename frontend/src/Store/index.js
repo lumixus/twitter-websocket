@@ -4,7 +4,7 @@ import {createSlice, configureStore} from "@reduxjs/toolkit"
 const userSlice = createSlice({
 name : "user",
 initialState : {
-    user: {username : "test"}
+    user: {}
 },
 reducers : {
     setUser: state => {
