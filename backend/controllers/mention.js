@@ -7,7 +7,7 @@ export const getMentionsByTweet = async(req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        const mentions = await Mention.findAll({where:{TweetId:tweet_id, isVisible:true}});
+        const mentions = await Mention.findAll({where:{TweetId:tweet_id, isVisible:true}, attributes:["id","TweetId", "UserId" ,"content", "image"]});
         res.status(200).json({success:true, mentions: mentions});
     }
     catch(err)
@@ -38,7 +38,7 @@ export const deleteMention = async(req, res, next) =>
     try
     {
         const {mention_id} = req.body;
-        const mention = await Mention.findByPk(mention_id);
+        const mention = await Mention.findOne({where:{id:mention_id}, attributes:["id", "isVisible", "hidByUser"]});
         await mention.update({isVisible:false, hidByUser:true});
         res.status(200).json({success:true, message: "Your mention has been deleted"});
     }

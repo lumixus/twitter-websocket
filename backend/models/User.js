@@ -143,7 +143,7 @@ const User = sequelize.define("User",
         defaultValue:null
     },
     emailConfirmationTokenExpires: {
-        type:DataTypes.STRING,
+        type:DataTypes.DATE,
         defaultValue:null
     },
     isVerified: {

@@ -12,9 +12,8 @@ export const createResetPasswordToken = async(user, next) =>
 {
     try
     {
-        const {RESET_PASSWORD_TOKEN_EXPIRES} = process.env;
         const resetPasswordToken = createRandomToken();
-        await user.update({resetPasswordToken:resetPasswordToken, resetPasswordTokenExpires:RESET_PASSWORD_TOKEN_EXPIRES});
+        await user.update({resetPasswordToken:resetPasswordToken, resetPasswordTokenExpires:new Date(Date.now() + 1 * 60 * 60 * 1000)});
         return user.resetPasswordToken;
     }
     catch(err)
@@ -27,9 +26,8 @@ export const createEmailConfirmationToken = async(user, next) =>
 {
     try
     {
-        const {EMAIL_CONFIRMATION_TOKEN_EXPIRES} = process.env;
         const emailConfirmationToken = createRandomToken();
-        await user.update({emailConfirmationToken:emailConfirmationToken, emailConfirmationTokenExpires:EMAIL_CONFIRMATION_TOKEN_EXPIRES});
+        await user.update({emailConfirmationToken:emailConfirmationToken, emailConfirmationTokenExpires:new Date(Date.now() + 1 *60 * 60 * 1000)});
         return user.emailConfirmationToken;
     }
     catch(err)
@@ -63,14 +61,4 @@ export const hashPassword = (password) =>
 //     {
 //         return next(err);
 //     }
-// }
-
-// {
-//     "firstName":"Tumer",
-//     "lastName": "Altunbas",
-//     "username" : "tumer3",
-//     "email":"tumeraltunbass3@gmail.com",
-//     "role":"user",
-//     "password" : "tumer1234",
-//     "dateOfBirth" : "2002-10-03"
 // }

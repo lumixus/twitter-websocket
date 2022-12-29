@@ -27,7 +27,8 @@ export const getTweetById = async(req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        const tweet = await Tweet.findByPk(tweet_id);
+        // const tweet = await Tweet.findByPk(tweet_id);
+        const tweet = await Tweet.findOne({where: {id:tweet_id}, attributes:["id","content", "image", "UserId", "createdAt"]});
         res.status(200).json({success:true, data:tweet});
     }
     catch(err)
@@ -41,7 +42,8 @@ export const deleteTweet = async(req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        const tweet = await Tweet.findByPk(tweet_id);
+        // const tweet = await Tweet.findByPk(tweet_id);
+        const tweet = await Tweet.findOne({where:{id:tweet_id}, attributes:["id", "isVisible", "hidByUser"]});
         await tweet.update({isVisible: false, hidByUser:true});
         res.status(200).json({success:true, message:"Your tweet has been deleted"});
     }

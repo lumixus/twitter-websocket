@@ -7,7 +7,7 @@ export const isUserExist = async (req, res, next) => {
   const value  = req.body.username || req.body.user_id;
   try 
   {
-    const user = await User.findOne({where: {username:value}}) || await User.findByPk(value);
+    const user = await User.findOne({where: {username:value},attributes:["id"]}) || await User.findOne({where: {id:value},attributes:["id"]});
     if (!user) {
       return next(new CustomError(500, "There is no user like this"));
     }
@@ -26,7 +26,7 @@ export const isTweetExist = async(req, res, next) =>
     {
         return next(new CustomError(400, "Mention must be belong to a tweet"));
     }
-    const tweet = await Tweet.findByPk(tweet_id);
+    const tweet = await Tweet.findOne({where:{id:tweet_id}, attributes:["id"]});
     if(!tweet)
     {
         return next(new CustomError(400, "There is no tweet with that id"));

@@ -4,16 +4,14 @@ import User from "../models/User.js"
 export const blockUser = async(req, res, next) =>
 {
     try
-    {
-        //If user's blocked status already false 
+    { 
         const {user_id} = req.body;
-        const user = await User.findByPk(user_id);
+        const user = await User.findOne({where: {id:user_id}, attributes:["id", "blocked", "isActive"]});
         if(user.blocked == true)
         {
             return next(new CustomError(500, "This user already blocked"));
         }
-        user.blocked = true;
-        await user.save();
+        await user.update({isActive:false, blocked:true});
         res.status(200).json({success:true, message:`The user's block status ${user.blocked}`});
     }
     catch(err)
@@ -27,13 +25,12 @@ export const unblockUser = async(req, res, next) =>
     try
     {
         const {user_id} = req.body;
-        const user = await User.findByPk(user_id);
+        const user = await User.findOne({where: {id:user_id}, attributes:["id", "blocked", "isActive"]});
         if(user.blocked == false)
         {
             return next(new CustomError(500, "This user already did not block"));
         }
-        user.blocked = false;
-        await user.save();
+        await user.update({isActive:true, blocked:false});
         res.status(200).json({success:true, message:`The user's block status ${user.blocked}`});
     }
     catch(err)
@@ -46,7 +43,7 @@ export const getAllUsers = async (req, res, next) =>
 {
     try
     {
-        const users = await User.findAll();
+        const users = await User.findAll({attributes:["id","firstName", "lastName", "username", "email", "dateOfBirth", "profilePicture", "role", "createdAt", "isActive"]});
         res.status(200).json({success:true, data:users});
     }
     catch(err)

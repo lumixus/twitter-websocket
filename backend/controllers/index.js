@@ -26,7 +26,7 @@ export const index = async (req, res, next) =>
         {
             followingUsers.push(follow.FollowerId);
         }
-        const tweets = await Tweet.findAll({attributes:["id", "content", "image", "createdAt", "UserId"], where: {UserId: {[Op.in]:followingUsers}}, order:sequelize.literal('createdAt desc')});
+        const tweets = await Tweet.findAll({attributes:["id", "content", "image", "createdAt", "UserId"], where: {UserId: {[Op.in]:followingUsers}}, order:sequelize.literal('createdAt desc'), limit:20});
         for(var tweet of tweets)
         {
             const user = await User.findOne({attributes:["firstName", "lastName", "username"], where: {id:tweet.UserId}});
