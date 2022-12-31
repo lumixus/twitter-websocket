@@ -6,29 +6,14 @@ export const addBookmark = async (req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        if(await Bookmark.findOne({where:{TweetId:tweet_id, UserId:req.user.id}}))
+        let {mention_id} = req.body;
+        if(mention_id === undefined)
+        mention_id=null;
+        if((await Bookmark.count({where: {UserId:req.user.id, TweetId: tweet_id, MentionId:mention_id}})))
         {
-            return next(new CustomError(400, "You already marked this tweet"));
+            return next(new CustomError(400, "This is already bookmarked"));
         }
-        const bookmark = await Bookmark.create({UserId: req.user.id, TweetId: tweet_id});
-        res.status(200).json({success:true, data:bookmark});
-    }
-    catch(err)
-    {
-        return next(err);
-    }
-    
-}
-export const addBookmarkMention = async(req, res, next) =>
-{
-    try
-    {
-        const {tweet_id, mention_id} = req.body;
-        if(await Bookmark.findOne({where:{TweetId:tweet_id, UserId:req.user.id, MentionId:mention_id}}))
-        {
-            return next(new CustomError(400, "You already marked this mention"));
-        }
-        const bookmark = await Bookmark.create({UserId: req.user.id, TweetId: tweet_id, MentionId: mention_id});
+        const bookmark = await Bookmark.create({UserId:req.user.id, TweetId:tweet_id, MentionId:mention_id});
         res.status(200).json({success:true, data:bookmark});
     }
     catch(err)
@@ -42,30 +27,15 @@ export const undoBookmark = async(req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        if(!await Bookmark.findOne({where:{TweetId:tweet_id, UserId:req.user.id}}))
+        let {mention_id} = req.body;
+        if(mention_id === undefined)
+        mention_id=null;
+        if(!await Bookmark.count({where: {UserId: req.user.id, TweetId:tweet_id, MentionId:mention_id}}))
         {
-            return next(new CustomError(400, "You already did not mark this tweet"));
+            return next(new CustomError(400, "You already did not bookmarked it"));
         }
-        await Bookmark.destroy({where:{TweetId:tweet_id, UserId:req.user.id}});
-        res.status(200).json({success:true, message: "Undo bookmark successfull"});
-    }
-    catch(err)
-    {
-        return next(err);
-    }
-}
-
-export const undoBookmarkMention = async(req, res, next) =>
-{
-    try
-    {
-        const {tweet_id, mention_id} = req.body;
-        if(!await Bookmark.findOne({where:{TweetId:tweet_id, UserId:req.user.id, MentionId:mention_id}}))
-        {
-            return next(new CustomError(400, "You already did not mark this mention"));
-        }
-        await Bookmark.destroy({where:{TweetId:tweet_id, UserId:req.user.id, MentionId:mention_id}});
-        res.status(200).json({success:true, message: "Undo mention bookmark successfull"});
+        await Bookmark.destroy({where: {UserId: req.user.id, TweetId:tweet_id, MentionId:mention_id}});
+        res.status(200).json({success:true, data:"Undo Bookmark Successfull"});
     }
     catch(err)
     {

@@ -43,22 +43,3 @@ export const hashPassword = (password) =>
     return hash;
 }
 
-// export const exampleName = async(tweets,next)=>
-// {
-//     //Beklemeden arrayını döndürüyor async işlemlerle ilgili bir durum var
-//     try
-//     {
-//         const response = [];
-//         for(var tweet of tweets)
-//         {
-//             const user = await User.findOne({attributes:["firstName", "lastName", "username"], where: {id:tweet.UserId}});
-//             const obj = {"tweet":tweet, "user":user};
-//             response.push(obj);
-//         }
-//         return response;
-//     }
-//     catch(err)
-//     {
-//         return next(err);
-//     }
-// }
