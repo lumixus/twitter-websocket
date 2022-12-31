@@ -17,7 +17,11 @@ const Favorite = sequelize.define("Favorite", {
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
-    }
+    },
+    isVisible: {
+        type: DataTypes.BOOLEAN,
+        defaultValue:true
+    },
 });
 
 export default Favorite

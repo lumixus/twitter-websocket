@@ -28,6 +28,10 @@ const Mention = sequelize.define("Mention", {
         type: DataTypes.INTEGER,
         allowNull:false
     },
+    favoriteCount: {
+        type:DataTypes.INTEGER,
+        defaultValue:0
+    },
     createdAt : {
         type:DataTypes.DATE,
         defaultValue: DataTypes.NOW,

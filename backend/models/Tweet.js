@@ -23,6 +23,14 @@ const Tweet = sequelize.define("Tweet", {
         defaultValue: DataTypes.NOW,
         allowNull:false
     },
+    favoriteCount: {
+        type: DataTypes.INTEGER,
+        defaultValue:0
+    },
+    mentionCount: {
+        type: DataTypes.INTEGER,
+        defaultValue:0
+    },
     UserId: {
         type:DataTypes.INTEGER,
         allowNull: false

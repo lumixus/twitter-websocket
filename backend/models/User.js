@@ -5,6 +5,7 @@ import { hashPassword } from "../helpers/database/modelHelpers.js";
 // import Tweet from "./Tweet.js";
 import Mention from "./Mention.js";
 import Tweet from "./Tweet.js";
+import Favorite from "./Favorite.js";
 
 const User = sequelize.define("User",
 {
@@ -168,11 +169,15 @@ User.addHook("afterUpdate", async function(user)
             {
                 await tweet.update({isVisible:user.isActive});
             });
-        
         const mentions = await Mention.findAll({where: {hidByUser:false,UserId:user.id}});
         mentions.forEach(async mention =>
             {
                 await mention.update({isVisible:user.isActive});
+            });
+        const favorites = await Favorite.findAll({where: {UserId: user.id}})
+        favorites.forEach(async favorite => 
+            {
+                await favorite.update({isVisible:user.isActive})
             });
     }
 });
