@@ -5,23 +5,14 @@ export const reTweet = async(req, res, next) =>
 {
     try
     {
-        const {tweet_id,content} = req.body;
-        const reTweet = await Retweet.create({TweetId:tweet_id, UserId: req.user.id, content:content});
-        res.status(200).json({success:true, message: "Retweet successfull", data:reTweet});
-    }
-    catch(err)
-    {
-        return next(err);
-    }
-}
-
-export const reTweetMention = async(req, res, next) =>
-{
-    try
-    {
-        const {tweet_id, mention_id, content} = req.body;
-        const reTweet = await Retweet.create({TweetId:tweet_id, UserId: req.user.id, MentionId:mention_id, content:content});
-        res.status(200).json({success:true, message: "Retweet successfull", data:reTweet});
+        const {tweet_id, content} = req.body;
+        let {mention_id} = req.body;
+        if(mention_id === undefined)
+        mention_id = null;
+        if(await Retweet.count({where: {TweetId:tweet_id, MentionId:mention_id, UserId: req.user.id}}))
+        return next(new CustomError(400, "You already retweeted this"));
+        const reTweet = await Retweet.create({TweetId:tweet_id, MentionId:mention_id, UserId:req.user.id, content:content});
+        res.status(200).json({success:true, data:reTweet});
     }
     catch(err)
     {
@@ -34,29 +25,13 @@ export const undoReTweet = async (req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        if(!await Retweet.findOne({where:{TweetId:tweet_id, UserId: req.user.id}}))
-        {
-            return next(new CustomError(400, "You already did not retweet this tweet"));
-        }
-        await Retweet.destroy({where:{TweetId:tweet_id, UserId: req.user.id}});
-        res.status(200).json({success:true, message: "Undo retweet successfull"});
-    }
-    catch(err)
-    {
-        return next(err);
-    }
-}
-export const undoReTweetMention = async(req, res, next) =>
-{
-    try
-    {
-        const {tweet_id, mention_id} = req.body;
-        if(!await Retweet.findOne({where:{TweetId: tweet_id, MentionId:mention_id, UserId:req.user.id}}))
-        {
-            return next(new CustomError(400, "You already did not retweet this mention"));
-        }
-        await Retweet.destroy({where: {TweetId: tweet_id, MentionId:mention_id, UserId:req.user.id}});
-        res.status(200).json({success:true, message: "Undo retweet mention successfull"});
+        let {mention_id} = req.body;
+        if(mention_id===undefined)
+        mention_id=null
+        if(!await Retweet.count({where: {UserId:req.user.id, TweetId:tweet_id, MentionId: mention_id}})) 
+        return next(new CustomError(400, "You already did not retweet this"));
+        await Retweet.destroy({where: {UserId:req.user.id, TweetId:tweet_id, MentionId: mention_id}});
+        res.status(200).json({success:true, message:"Undo retweet successfull"});
     }
     catch(err)
     {
