@@ -58,7 +58,7 @@ const LoginFlow = () => {
                 Or
                 <hr width="120px" />
               </div>
-              <input className={styles.loginInput} onChange={(e) => setId(e)} type="text" placeholder='Phone, e-mail or username'/>
+              <input className="loginInput" onChange={(e) => setId(e)} type="text" placeholder='Phone, e-mail or username'/>
 
               <div className={styles.nextButton}>
                 <Button variant='light'>Next</Button>
