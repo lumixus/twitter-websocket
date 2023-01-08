@@ -2,42 +2,84 @@ import User from "../models/User.js";
 import {sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
 import CustomError from "../helpers/error/CustomError.js";
 import { comparePasswords, validateInputs } from "../helpers/input/inputHelpers.js";
-import { createEmailConfirmationToken, createResetPasswordToken } from "../helpers/database/modelHelpers.js";
-import { mailHelper } from "../helpers/mailHelper/mailHelper.js";
+import { createVerificationCode, createResetPasswordToken } from "../helpers/database/modelHelpers.js";
+import { createMailOptions, mailHelper } from "../helpers/mailHelper/mailHelper.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import Follow from "../models/Follow.js";
 import Bookmark from "../models/Bookmark.js";
 import Favorite from "../models/Favorite.js";
 import Tweet from "../models/Tweet.js";
 import Mention from "../models/Mention.js";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
+import sequelize from "../helpers/database/dbConnection.js";
+import { sendSms } from "../helpers/smsHelper/smsHelper.js";
 
-export const register = async(req, res, next) =>
+export const firstOnBoarding = async(req, res, next) =>
 {
-    try{
-        const {firstName, lastName, username, email, password, dateOfBirth, role} = req.body;
-        const user = await User.create({firstName:firstName, lastName:lastName, username:username, email:email, password:password, dateOfBirth:dateOfBirth, role:role});
-        createEmailConfirmationToken(user,next);
-        const url = `http://localhost:8080/auth/emailconfirmation?confirmToken=${user.emailConfirmationToken}`;
-        const mailOptions = {
-            from: process.env.SMTP_USER,
-            to:email,
-            subject: "Email confirmation",
-            html: `<h1>This<a href='${url}'> link </a>provides a email confirmation</h1>`
-        };
-        mailHelper(mailOptions);
-        sendJwtToCookie(user, res);
+    try
+    {
+        const {name, dateOfBirth, phone, email} = req.body;
+        if(!validateInputs(name, dateOfBirth, phone || email))
+        return next(new CustomError(400, "Sure to filled all fields"))
+        const verificationCode = await createVerificationCode();
+        if(!phone)
+        {
+            mailHelper(createMailOptions(email, 'Email Confirmation', `Your email confirmation code is ${verificationCode}`));
+        }
+        else
+        {
+            sendSms(phone, `Your phone verification code is ${verificationCode}`)
+        }
+        await User.create({name: name, dateOfBirth:dateOfBirth, phone:phone, email: email, verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
+        res.status(200).json({success:true});
     }
-    catch (err)
+    catch(err)
+    {
+        return next(err)
+    }
+}
+
+export const verify = async(req, res, next) =>
+{
+    try
+    {
+        const {verificationCode} = req.body;
+        const user = await User.findOne({where: {verificationCode:verificationCode}})
+        if(!user)
+        return next(new CustomError(400, "Your verification code wrong or expired"));
+        await user.update({isVerified:true, verificationCode:null, verificationCodeExpires:null});
+        res.status(200).json({success:true});
+    }
+    catch(err)
     {
         return next(err);
     }
 }
 
+export const finalOnBoarding = async(req, res, next) =>
+{
+    try
+    {
+        const {username, password, email, phone} = req.body;
+        if(!validateInputs(username, password, email||phone))
+        return next(new CustomError(400, "Fill all fields"))
+        const user = await User.findOne({where: {email:email||null}}) || (await User.findOne({where:{phone:phone}}));
+        if(user.isVerified == false)
+        return next(new CustomError(401, "You cant access to this route before the verification"));
+        await user.update({username:username, password:password});
+        sendJwtToCookie(user, res);
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+
 export const login = async(req, res, next) =>
 {
 
-    // attributes: { exclude: ['password'] },
+    // attributes: { exclude: ['password'] }
     try
     {
         const {username, password} = req.body;
@@ -88,11 +130,27 @@ export const profile = async(req, res, next) =>
 {
     try
     {
-        const user = await User.findOne({where: {isActive:true, id:req.user.id}, attributes:["id","firstName","lastName", "username","dateOfBirth","createdAt","profilePicture", "location", "biography","website"]});
-        const tweets = await Tweet.findAll({where: {UserId: req.user.id, isVisible:true}, attributes:["id", "content", "image","createdAt"]});
-        const mentions = await Mention.findAll({where: {UserId: req.user.id, isVisible:true}, attributes:["id", "content", "image", "createdAt", "TweetId"]});
-        const favorites = await Favorite.findAll({where:{UserId: req.user.id}, attributes:["id","createdAt", "TweetId", "MentionId"]});
-        res.status(200).json({success:true, user:user, tweets:tweets, mentions:mentions, favorites: favorites});
+        const {user_id} = req.body;
+        const user = await User.findOne({where: {isActive:true, id:user_id}, attributes:["id","firstName","lastName", "username","dateOfBirth","createdAt","profilePicture", "location", "biography","website"]});
+        const tweets = await Tweet.findAll({where: {UserId: user_id, isVisible:true}, attributes:["id", "content", "image","createdAt"]});
+        const mentions = await Mention.findAll({where: {UserId: user_id, isVisible:true}, attributes:["id", "content", "image", "createdAt", "TweetId"]});
+        const favorites = await sequelize.query(` 
+        select 
+        Tweets.id as TweetId, Tweets.content as TweetContent, Tweets.image as TweetImage, Tweets.mentionCount, Tweets.favoriteCount as TweetFavCount,
+        Mentions.id as MentionId, Mentions.image as MentionImage, Mentions.content as MentionContent, Mentions.favoriteCount as MentionFavCount
+        from Favorites 
+        left join Tweets on Tweets.Id = Favorites.TweetId 
+        left join Mentions on Mentions.Id = Favorites.MentionId
+        where Favorites.UserId = ${user.id}`, { type: Sequelize.QueryTypes.SELECT });
+        const retweets = await sequelize.query(`
+        select
+        Tweets.id as TweetId, Tweets.content as TweetContent, Tweets.image as TweetImage, 
+        Users.firstName as FirstName, Users.lastName as LastName, Users.username as Username, Users.profilePicture as ProfilePicture
+        from Retweets
+        left join Tweets on Tweets.Id = Retweets.TweetId
+        left join Users on Users.id = Tweets.UserId
+        where Retweets.UserId = ${user.id}`, { type: Sequelize.QueryTypes.SELECT })
+        res.status(200).json({success:true,user:user, tweets:tweets, mentions:mentions,favorites:favorites, retweets:retweets});
     }
     catch(err)
     {

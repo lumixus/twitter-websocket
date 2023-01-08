@@ -15,3 +15,13 @@ export const mailHelper = (mailOptions) =>
     transport.sendMail(mailOptions);
 }
 
+export const createMailOptions = (to, subject, text) =>
+{
+    const mailOption = {
+        from: process.env.SMTP_USER,
+        to:to,
+        subject: subject,
+        html: `<h1>${text}</h1>`
+    }
+    return mailOption;
+}

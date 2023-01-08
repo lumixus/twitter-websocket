@@ -10,80 +10,57 @@ import Favorite from "./Favorite.js";
 const User = sequelize.define("User",
 {
     //ID Column will be added automatically
-    firstName: {
+    name: {
         type: DataTypes.STRING,
         allowNull:false,
         validate: {
            len:{
-            args : [3, 35],
+            args : [3, 50],
             msg: ["Please provide a name between 3-35 characters"]
            },
            notNull: {
             args: [true],
-            msg:"You have to provide a first name"
+            msg:"You have to provide a name"
            },
            notEmpty: true
         },
     },
-    lastName: {
-        type: DataTypes.STRING,
-        allowNull:false,
-        validate: {
-            len: {
-                args: [2, 35],
-                msg: ["Please provide a last name between 2-35 characters"],
-            },
-            notNull: {
-                args: [true],
-                msg:"You have to provide a last name"
-            },
-            notEmpty: true
-        }
-    },
     username : {
         type: DataTypes.STRING,
         unique:true,
-        allowNull:false,
         validate: {
             len:{
                 args: [3,35],
                 msg:["Please provide a username between 3-35 characters"],
             },
-            notNull: {
-                args: [true],
-                msg:"You have to provide a username"
-            },
-            notEmpty: true
         },
     },
     email: {
         type:DataTypes.STRING,
         unique:true,
-        allowNull:false,
         validate:{
             isEmail:{
                 msg: "Please provide a valid email"
             },
-            notNull: {
-                args: [true],
-                msg:"You have to provide a username"
+        }
+    },
+    phone: {
+        type:DataTypes.STRING,
+        unique:true,
+        validate:{
+            is:{
+                args:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
+                msg: "Check your phone"
             },
-            notEmpty: true
         }
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate:{
             len: {
                 args:[8, 255],
                 msg: "Please provide a password between 8 - 255 characters"
             },
-            notNull: {
-                args: [true],
-                msg:"You have to provide a username"
-            },
-            notEmpty:true,
         }
     },
     dateOfBirth: {
@@ -139,11 +116,11 @@ const User = sequelize.define("User",
         type:DataTypes.DATE,
         defaultValue:null
     },
-    emailConfirmationToken:{
+    verificationCode:{
         type:DataTypes.STRING,
         defaultValue:null
     },
-    emailConfirmationTokenExpires: {
+    verificationCodeExpires: {
         type:DataTypes.DATE,
         defaultValue:null
     },
@@ -153,12 +130,12 @@ const User = sequelize.define("User",
     }
 });
 
-User.addHook("beforeCreate", async function(user)
-{
+// User.addHook("beforeCreate", async function(user)
+// {
 
-    const hash = hashPassword(user.password);
-    user.password = hash;
-});
+//     const hash = hashPassword(user.password);
+//     user.password = hash;
+// });
 
 User.addHook("afterUpdate", async function(user)
 {

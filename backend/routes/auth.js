@@ -1,15 +1,17 @@
 import express from "express";
-import { register, login,logout,editProfile,profile,uploadPhoto,forgotPassword,resetPassword,changePassword,deactiveAccount,emailConfirmation,removePicture,follow,unfollow,bookmarks,favorites } from "../controllers/auth.js";
+import { firstOnBoarding, verify,finalOnBoarding,login,logout,editProfile,profile,uploadPhoto,forgotPassword,resetPassword,changePassword,deactiveAccount,emailConfirmation,removePicture,follow,unfollow,bookmarks,favorites } from "../controllers/auth.js";
 import { isAuth } from "../middlewares/auth/auth.js";
 import { isUserExist } from "../middlewares/database/queryHelpers.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/firstonboarding", firstOnBoarding);
+router.post("/verify", verify);
+router.post("/finalonboarding", finalOnBoarding);
 router.post("/login", isUserExist, login);
 router.get("/logout", isAuth, logout);
 router.put("/edit", isAuth, editProfile);
-router.get("/profile", isAuth, profile);
+router.post("/profile", [isAuth, isUserExist], profile);
 router.post("/upload", isAuth, uploadPhoto);
 router.post("/forgotpassword", forgotPassword);
 router.put("/resetpassword", resetPassword);

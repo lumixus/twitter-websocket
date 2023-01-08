@@ -1,6 +1,8 @@
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import User from "../../models/User.js";
+import random from "random-numbers"
+import CustomError from "../error/CustomError.js";
 
 export const createRandomToken = () =>
 {
@@ -22,13 +24,12 @@ export const createResetPasswordToken = async(user, next) =>
     }
 }
 
-export const createEmailConfirmationToken = async(user, next) =>
+export const createVerificationCode = async() =>
 {
     try
     {
-        const emailConfirmationToken = createRandomToken();
-        await user.update({emailConfirmationToken:emailConfirmationToken, emailConfirmationTokenExpires:new Date(Date.now() + 1 *60 * 60 * 1000)});
-        return user.emailConfirmationToken;
+        const emailConfirmationCode = random.create(111111,999999);
+        return emailConfirmationCode;
     }
     catch(err)
     {

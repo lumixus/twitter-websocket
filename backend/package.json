@@ -15,6 +15,7 @@
   "author": "Emir Taskin and Tumer Altunbas",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1290.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
@@ -24,8 +25,10 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.8.0",
+    "random-numbers": "^1.0.8",
     "randomstring": "^1.2.3",
     "sequelize": "^6.27.0",
+    "sms-service": "^1.1.7",
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
