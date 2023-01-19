@@ -30,6 +30,13 @@ const SignupFlow = () => {
         }
     }
 
+    const prevStep = (e) => {
+        e.preventDefault();
+        if(step > 0){
+            setStep(step - 1);
+        }
+    }
+
     const signUp = async (e) => {
         e.preventDefault();
         setError("");
@@ -188,7 +195,11 @@ let fourthStep = <div>
 
 let CurrentStepElement = ""
 
-let StepCount = step > 0 ? <h5 style={{position: "absolute", top: "10px", left : "70px"}}>Step {step} of 5</h5> : null;
+let StepCount = step > 0 ? <>
+<p onClick={prevStep} style={{position: "absolute", top:"10px", right: "10px"}}>Back</p>
+<h5 style={{position: "absolute", top: "10px", left : "70px"}}>Step {step} of 5</h5>
+
+</> : null;
 
 
     switch (step) {
