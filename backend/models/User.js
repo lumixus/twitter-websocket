@@ -127,6 +127,10 @@ const User = sequelize.define("User",
     isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue:false,
+    },
+    isRegisterCompleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue:false
     }
 });
 

@@ -66,7 +66,7 @@ export const finalOnBoarding = async(req, res, next) =>
         const user = await User.findOne({where: {email:email||null}}) || (await User.findOne({where:{phone:phone}}));
         if(user.isVerified == false)
         return next(new CustomError(401, "You cant access to this route before the verification"));
-        await user.update({username:username, password:password});
+        await user.update({username:username, password:password, isRegisterCompleted:true});
         sendJwtToCookie(user, res);
     }
     catch(err)
