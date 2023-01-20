@@ -11,8 +11,10 @@ import { useState } from 'react';
 const SignupFlow = () => {
 
     const [step, setStep] = useState(0)
+    const [showEmail, setShowEmail] = useState(true)
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
+    const [phone, setPhone] = useState("")
     const [password, setPassword] = useState("")
     const [month, setMonth] = useState("")
     const [year, setYear] = useState("")
@@ -43,17 +45,22 @@ const SignupFlow = () => {
 
 
         const user = {
-            firstName: name,
-            lastName: "test",
+            name,
             email,
-            password,
+            phone,
             dateOfBirth: `${year}-${day < 10 ? "0"+day : day}-${month < 10 ? "0"+month : month}`
         }
 
         setLoading(true);
         try {
-            const {data} = await axios.post("http://localhost:8080/auth/register", user);
+            const {data} = await axios.post("http://localhost:8080/auth/firstonboarding", user);
             console.log(data);
+
+
+            if(data.success){
+                nextStep();
+            }
+
         } catch (error) {
             if(error.response && error.response.data){
                 setError(error.response.data.message)
@@ -121,29 +128,36 @@ Or
 let firstStep = <div style={{width : "100%", padding : "0px 60px"}}>
     <h2>Create your account</h2>
     <div className={"pt-4"}>
-        <input style={{width: "100%"}} className="loginInput" onChange={(e) => setName(e.target.value)} type="text" placeholder='Name'/>
+        <input style={{width: "100%"}} className="loginInput" onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder='Name'/>
     </div>
 
+    {showEmail ? 
     <div className={"pt-4 pb-4"}>
-        <input style={{width: "100%"}} className="loginInput" onChange={(e) => setEmail(e.target.value)} type="text" placeholder='Email'/>
+        <input style={{width: "100%"}} className="loginInput" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder='Email'/>
     </div>
+    : 
+    <div className={"pt-4 pb-4"}>
+        <input style={{width: "100%"}} className="loginInput" onChange={(e) => setPhone(e.target.value)} value={phone} type="phone" placeholder='Phone'/>
+    </div>
+    }
 
-    <div className={"pt-4 pb-4"}>
-        <input style={{width: "100%"}} className="loginInput" onChange={(e) => setPassword(e.target.value)} type="password" placeholder='Password'/>
-    </div>
+    <p onClick={() => setShowEmail(!showEmail)}>Signup with {showEmail ? "phone" : "email" }</p>
+
+
 
     <div>
-        <select onChange={(e) => setMonth(e.target.value)}>
+        <select defaultValue={month} onChange={(e) => setMonth(e.target.value)}>
             <option value=""></option>
+            
             {months.map((m, index) => <option key={index} value={index+1}>{m}</option>)}
         </select>
 
-        <select onChange={(e) => setDay(e.target.value)}>
+        <select defaultValue={day} onChange={(e) => setDay(e.target.value)}>
             <option value=""></option>
             {getNumberArray(1, 31).map((d, index) => <option key={index} value={index+1}>{d}</option>)}
         </select>
 
-        <select onChange={(e) => setYear(e.target.value)}>
+        <select defaultValue={year} onChange={(e) => setYear(e.target.value)}>
             <option value=""></option>
             {getNumberArray(new Date().getFullYear() - 123, new Date().getFullYear() ).map((y, index) => <option key={index} value={y}>{y}</option>)}
         </select>
@@ -175,9 +189,16 @@ let thirdStep = <div style={{width : "100%", padding : "0px 60px"}}>
         <input style={{width: "100%"}} onClick={(e) => setStep(1)} className="loginInput" defaultValue={name} type="text" placeholder='Name'/>
     </div>
 
+    {showEmail ? 
+
     <div className={"pt-4 pb-4"}>
         <input style={{width: "100%"}} onClick={(e) => setStep(1)} className="loginInput" defaultValue={email} type="text" placeholder='Email'/>
     </div>
+    :
+    <div className={"pt-4 pb-4"}>
+        <input style={{width: "100%"}} onClick={(e) => setStep(1)} className="loginInput" defaultValue={phone} type="phone" placeholder='Phone'/>
+    </div>
+    }
 
     <div className={"pt-4 pb-4"}>
         <input style={{width: "100%"}} onClick={(e) => setStep(1)} className="loginInput" defaultValue={`${month > 0 ? months[month-1].substring(0,3) : null} ${day}, ${year}`} type="text" placeholder='Email'/>
