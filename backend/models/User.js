@@ -49,10 +49,10 @@ const User = sequelize.define("User",
         unique:true,
         validate:{
             is:{
-                args:/^\+?[1-9][0-9]{7,14}$/,
+                args:/^([+]\d{2})?\d{10}$/,
                 msg: "Check your phone"
-            },
-        }
+            },            
+        },
     },
     password: {
         type: DataTypes.STRING,
