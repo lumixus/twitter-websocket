@@ -49,7 +49,7 @@ const User = sequelize.define("User",
         unique:true,
         validate:{
             is:{
-                args:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
+                args:/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
                 msg: "Check your phone"
             },
         }
