@@ -1,5 +1,5 @@
 import sequelize from "../helpers/database/dbConnection.js";
-import { DataTypes } from "sequelize";
+import { DataTypes, ValidationError } from "sequelize";
 import bcryptjs from "bcryptjs";
 import { hashPassword } from "../helpers/database/modelHelpers.js";
 // import Tweet from "./Tweet.js";
@@ -53,16 +53,6 @@ const User = sequelize.define("User",
     phone: {
         type:DataTypes.STRING,
         unique:true,
-        validate:{            
-            isPhoneOrEmpty(val, next) {
-                if(!val || val === "" || validatePhone(val)) {
-                    return next();
-                }
-                else {
-                    return next("This phone is invalid")
-                }
-            }
-        },
     },
     password: {
         type: DataTypes.STRING,

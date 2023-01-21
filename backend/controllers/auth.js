@@ -24,10 +24,14 @@ export const firstOnBoarding = async(req, res, next) =>
         const verificationCode = await createVerificationCode();
         if(!phone)
         {
+            if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
+                return next(new CustomError(400, "Email invalid"));
             mailHelper(createMailOptions(email, 'Email Confirmation', `Your email confirmation code is ${verificationCode}`));
         }
         else
         {
+            if(!/^([+]\d{2})?\d{10}$/.test(phone))
+                return next(new CustomError(400, "Phone is invalid"));
             sendSms(phone, `Your phone verification code is ${verificationCode}`)
         }
         await User.create({name: name, dateOfBirth:dateOfBirth, phone:phone, email: email, verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
