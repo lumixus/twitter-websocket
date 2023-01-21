@@ -7,6 +7,12 @@ import Mention from "./Mention.js";
 import Tweet from "./Tweet.js";
 import Favorite from "./Favorite.js";
 
+
+const validatePhone = (phone) => {
+    var re = /^([+]\d{2})?\d{10}$/;
+    return re.test(String(phone));
+}
+
 const User = sequelize.define("User",
 {
     //ID Column will be added automatically
@@ -47,11 +53,15 @@ const User = sequelize.define("User",
     phone: {
         type:DataTypes.STRING,
         unique:true,
-        validate:{
-            is:{
-                args:/^([+]\d{2})?\d{10}$/,
-                msg: "Check your phone"
-            },            
+        validate:{            
+            isPhoneOrEmpty(val, next) {
+                if(!val || val === "" || validatePhone(val)) {
+                    return next();
+                }
+                else {
+                    return next("This phone is invalid")
+                }
+            }
         },
     },
     password: {
