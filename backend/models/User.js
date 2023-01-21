@@ -46,13 +46,7 @@ const User = sequelize.define("User",
     },
     phone: {
         type:DataTypes.STRING,
-        unique:true,
-        validate:{
-            is:{
-                args:/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/,
-                msg: "Check your phone"
-            },
-        }
+        unique:true
     },
     password: {
         type: DataTypes.STRING,
