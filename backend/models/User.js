@@ -44,21 +44,18 @@ const User = sequelize.define("User",
     email: {
         type:DataTypes.STRING,
         unique:true,
-        validate:{
-            isEmail:{
-                msg: "Please provide a valid email"
-            },
-            notEmpty:false
-        },
+        // validate:{
+        //     isEmail:{
+        //         msg: "Please provide a valid email"
+        //     },
+        //     notEmpty:false
+        // },
         allowNull: true
     },
     phone: {
         type:DataTypes.STRING,
         unique:true,
-        allowNull:true,
-        validate:{
-            notEmpty:false
-        }
+        allowNull:true
     },
     password: {
         type: DataTypes.STRING,

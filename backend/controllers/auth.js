@@ -18,18 +18,20 @@ export const firstOnBoarding = async(req, res, next) =>
 {
     try
     {
-        const {name, dateOfBirth, phone, email} = req.body;
+        let {name, dateOfBirth, phone, email} = req.body;
         if(!validateInputs(name, dateOfBirth, phone || email))
         return next(new CustomError(400, "Sure to filled all fields"))
         const verificationCode = await createVerificationCode();
         if(!phone)
         {
+            phone = null;
             if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
                 return next(new CustomError(400, "Email invalid"));
             mailHelper(createMailOptions(email, 'Email Confirmation', `Your email confirmation code is ${verificationCode}`));
         }
         else
         {
+            email=null;
             if(!/^([+]\d{2})?\d{10}$/.test(phone))
                 return next(new CustomError(400, "Phone is invalid"));
             sendSms(phone, `Your phone verification code is ${verificationCode}`)
