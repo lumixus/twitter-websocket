@@ -22,6 +22,9 @@ export const firstOnBoarding = async(req, res, next) =>
         if(!validateInputs(name, dateOfBirth, phone || email))
         return next(new CustomError(400, "Sure to filled all fields"))
         const verificationCode = await createVerificationCode();
+
+        await User.create({name: name, dateOfBirth:dateOfBirth, phone:phone, email: email, verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
+
         if(!phone)
         {
             phone = null;
@@ -36,7 +39,7 @@ export const firstOnBoarding = async(req, res, next) =>
                 return next(new CustomError(400, "Phone is invalid"));
             sendSms(phone, `Your phone verification code is ${verificationCode}`)
         }
-        await User.create({name: name, dateOfBirth:dateOfBirth, phone:phone, email: email, verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
+        
         res.status(200).json({success:true});
     }
     catch(err)

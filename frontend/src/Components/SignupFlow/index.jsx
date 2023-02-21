@@ -12,6 +12,7 @@ const SignupFlow = () => {
 
     const [step, setStep] = useState(0)
     const [showEmail, setShowEmail] = useState(true)
+    const [verificationCode, setVerificationCode] = useState("");
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
@@ -27,6 +28,7 @@ const SignupFlow = () => {
     const nextStep = (e) => {
         e.preventDefault()
         if(step < 5){
+            console.log()
             let next = step + 1;
             setStep(next)
         }
@@ -34,9 +36,29 @@ const SignupFlow = () => {
 
     const prevStep = (e) => {
         e.preventDefault();
+
         if(step > 0){
             setStep(step - 1);
         }
+    }
+
+    const sendVerificationCode = async () => {
+        setLoading(true);
+        setError("");
+
+        try {
+            const {data} = await axios.post("http://localhost:8080/auth/verify", {verificationCode})
+
+            if(data.success === true){
+                console.log("Success");
+            }
+
+        } catch (error) {
+            console.log(error);            
+        }
+
+
+        setLoading(false);
     }
 
     const signUp = async (e) => {
@@ -46,19 +68,19 @@ const SignupFlow = () => {
 
         const user = {
             name,
-            email,
-            phone,
-            dateOfBirth: `${year}-${day < 10 ? "0"+day : day}-${month < 10 ? "0"+month : month}`
+            email: showEmail ? email : null,
+            phone: showEmail === false ? phone : null,
+            dateOfBirth: `${year}-${month < 10 ? "0"+month : month}-${day < 10 ? "0"+day : day}`
         }
-
+        console.log(user);
         setLoading(true);
         try {
             const {data} = await axios.post("http://localhost:8080/auth/firstonboarding", user);
-            console.log(data);
+            console.log(data.success);
 
 
-            if(data.success){
-                nextStep();
+            if(data.success === true){
+                setStep(4);
             }
 
         } catch (error) {
@@ -68,9 +90,6 @@ const SignupFlow = () => {
         }
 
         setLoading(false);
-
-
-
     }
 
 
@@ -209,9 +228,17 @@ let thirdStep = <div style={{width : "100%", padding : "0px 60px"}}>
 </div>
 
 
-let fourthStep = <div>
+let fourthStep = <div className='p-4'>
     <h2>Activate your account!</h2>
-    <p>We've sent an email for activation! Please activate your account</p>
+    <p>We've sent verification code to your {showEmail ? "email" : "phone"} for activation! Please enter your verification code</p>
+    <input onChange={(e) => setVerificationCode(e.target.value)} className='loginInput' type="text" placeholder='Verification code' />
+    <Button
+    className='mt-4 w-100'
+    style={{width: "100%", height: "50px", borderRadius: "20px"}}
+    variant='primary'
+    onClick={(e) => sendVerificationCode()}>
+        Send
+    </Button>
 </div>
 
 let CurrentStepElement = ""
@@ -248,7 +275,7 @@ let StepCount = step > 0 ? <>
 
 
     return (<>
-    {StepCount}
+    {step !== 4 ? StepCount : null}
     {CurrentStepElement}
     </>)
 
