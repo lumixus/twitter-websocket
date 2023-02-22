@@ -29,7 +29,8 @@
     "randomstring": "^1.2.3",
     "sequelize": "^6.27.0",
     "sms-service": "^1.1.7",
-    "socket.io": "^4.5.4"
+    "socket.io": "^4.5.4",
+    "ws": "^8.12.0"
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
