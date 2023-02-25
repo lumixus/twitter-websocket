@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/firstonboarding", firstOnBoarding);
 router.post("/verify", verify);
-router.post("/finalonboarding", finalOnBoarding);
+router.post("/finalonboarding" ,finalOnBoarding);
 router.post("/login", isUserExist, login);
 router.get("/logout", isAuth, logout);
 router.put("/edit", isAuth, editProfile);

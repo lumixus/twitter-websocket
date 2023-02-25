@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import {sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
+import {createJwt, sendJwtToCookie} from "../helpers/jwt/tokenHelpers.js";
 import CustomError from "../helpers/error/CustomError.js";
 import { comparePasswords, validateInputs } from "../helpers/input/inputHelpers.js";
 import { createVerificationCode, createResetPasswordToken } from "../helpers/database/modelHelpers.js";
@@ -13,33 +13,42 @@ import Mention from "../models/Mention.js";
 import { Op, Sequelize } from "sequelize";
 import sequelize from "../helpers/database/dbConnection.js";
 import { sendSms } from "../helpers/smsHelper/smsHelper.js";
+import jsonwebtoken from "jsonwebtoken";
 
 export const firstOnBoarding = async(req, res, next) =>
 {
     try
     {
         let {name, dateOfBirth, phone, email} = req.body;
-        if(!validateInputs(name, dateOfBirth, phone || email))
-        return next(new CustomError(400, "Sure to filled all fields"))
-        const verificationCode = await createVerificationCode();
-
-        await User.create({name: name, dateOfBirth:dateOfBirth, phone:phone, email: email, verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
-
-        if(!phone)
-        {
-            phone = null;
-            if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
-                return next(new CustomError(400, "Email invalid"));
-            mailHelper(createMailOptions(email, 'Email Confirmation', `Your email confirmation code is ${verificationCode}`));
+        if(!validateInputs(name, dateOfBirth, phone || email)) {
+            return next(new CustomError(400, "Sure to filled all fields"))
         }
-        else
-        {
-            email=null;
-            if(!/^([+]\d{2})?\d{10}$/.test(phone))
-                return next(new CustomError(400, "Phone is invalid"));
-            sendSms(phone, `Your phone verification code is ${verificationCode}`)
+
+        const user = await User.findOne({where: {phone:phone||null}}) || await User.findOne({where:{email:email||null}});
+
+        if(user && user.isRegisterCompleted == false) {
+            const verificationCode = await createVerificationCode();
+            await user.update({verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
         }
-        
+        else{
+            const verificationCode = await createVerificationCode();
+            await User.create({name: name, dateOfBirth:dateOfBirth, phone:phone, email: email, verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
+
+            if(!phone)
+            {
+                phone = null;
+                if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email))
+                    return next(new CustomError(400, "Email invalid"));
+                mailHelper(createMailOptions(email, 'Email Confirmation', `Your email confirmation code is ${verificationCode}`));
+            }
+            else
+            {
+                email=null;
+                if(!/^([+]\d{2})?\d{10}$/.test(phone))
+                    return next(new CustomError(400, "Phone is invalid"));
+                sendSms(phone, `Your phone verification code is ${verificationCode}`)
+            }
+        }
         res.status(200).json({success:true});
     }
     catch(err)
@@ -52,12 +61,17 @@ export const verify = async(req, res, next) =>
 {
     try
     {
-        const {verificationCode} = req.body;
-        const user = await User.findOne({where: {verificationCode:verificationCode}})
-        if(!user)
-        return next(new CustomError(400, "Your verification code wrong or expired"));
+        const {verificationCode, email, phone} = req.body;
+        const user = await User.findOne({where: {phone:phone||null}}) || await User.findOne({where:{email:email||null}});
+        if(!user) {
+            return next(new CustomError(400, "There is no user with provided email or phone"))
+        }
+        if(user.verificationCode != verificationCode || user.verificationCodeExpires < Date.now()) {
+            return next(new CustomError(400, "Your verification code wrong or expired"));
+        };
         await user.update({isVerified:true, verificationCode:null, verificationCodeExpires:null});
-        res.status(200).json({success:true});
+        const verifyToken = createJwt(user);
+        res.status(200).json({success:true, verifyToken:verifyToken});
     }
     catch(err)
     {
@@ -69,14 +83,19 @@ export const finalOnBoarding = async(req, res, next) =>
 {
     try
     {
-        const {username, password, email, phone} = req.body;
-        if(!validateInputs(username, password, email||phone))
-        return next(new CustomError(400, "Fill all fields"))
-        const user = await User.findOne({where: {email:email||null}}) || (await User.findOne({where:{phone:phone}}));
-        if(user.isVerified == false)
-        return next(new CustomError(401, "You cant access to this route before the verification"));
-        await user.update({username:username, password:password, isRegisterCompleted:true});
-        sendJwtToCookie(user, res);
+        const {username, password, verifyToken} = req.body;
+        if(!validateInputs(username, password)){
+            return next(new CustomError(400, "Fill the all fields"));
+        }
+        
+        jsonwebtoken.verify(verifyToken, process.env.JWT_SECRET_KEY, async function(err, decoded){
+            if(err){
+                return next(err);
+            }
+            const user = await User.findByPk(decoded.id);
+            await user.update({username:username, password:password, isRegisterCompleted:true});
+            return res.status(200).json({success:true})
+        });
     }
     catch(err)
     {
