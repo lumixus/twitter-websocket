@@ -28,6 +28,7 @@ export const firstOnBoarding = async(req, res, next) =>
 
         if(user && user.isRegisterCompleted == false) {
             const verificationCode = await createVerificationCode();
+            mailHelper(createMailOptions(email, 'Email Confirmation', `Your email confirmation code is ${verificationCode}`));
             await user.update({verificationCode:verificationCode, verificationCodeExpires: new Date(Date.now() + 1 * 5 * 60 * 1000)});
         }
         else{
