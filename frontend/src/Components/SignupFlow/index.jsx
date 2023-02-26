@@ -20,6 +20,7 @@ const SignupFlow = () => {
     const [month, setMonth] = useState("")
     const [year, setYear] = useState("")
     const [day, setDay] = useState("")
+    const [verifyToken, setVerifyToken] = useState("")
 
 
     const [loading, setLoading] = useState(false);
@@ -50,7 +51,7 @@ const SignupFlow = () => {
             const {data} = await axios.post("http://localhost:8080/auth/verify", {verificationCode})
 
             if(data.success === true){
-                console.log("Success");
+                setVerifyToken(data.verifyToken);
             }
 
         } catch (error) {
@@ -59,6 +60,15 @@ const SignupFlow = () => {
 
 
         setLoading(false);
+    }
+
+    const sendPassword = async () => {
+        try {
+            const {data} = await axios.post("http://localhost:8080/auth/finalonboarding", {password: password, verifyToken: verifyToken});
+            console.log(data);
+        } catch (error) {
+            setError(error);
+        }
     }
 
     const signUp = async (e) => {
@@ -241,6 +251,18 @@ let fourthStep = <div className='p-4'>
     </Button>
 </div>
 
+let fifthStep = <div className='p-4'>
+    <h2>Set your password</h2>
+    <input onChange={(e) => setPassword(e.target.value)} className='loginInput' type="password" placeholder='Password' />
+    <Button
+    className='mt-4 w-100'
+    style={{width: "100%", height: "50px", borderRadius: "20px"}}
+    variant='primary'
+    onClick={(e) => sendPassword()}>
+        Submit
+    </Button>
+</div>
+
 let CurrentStepElement = ""
 
 let StepCount = step > 0 ? <>
@@ -266,8 +288,10 @@ let StepCount = step > 0 ? <>
         case 4:
             CurrentStepElement = fourthStep;
         break;
+        case 5:
+            CurrentStepElement = fifthStep;
+            break;
 
-    
         default:
             CurrentStepElement = loginOptions;
     }
