@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import User from "../../models/User.js";
-import random from "random-numbers"
+import randomInteger from "random-int";
 import CustomError from "../error/CustomError.js";
 
 export const createRandomToken = () =>
@@ -28,7 +28,7 @@ export const createVerificationCode = async() =>
 {
     try
     {
-        const emailConfirmationCode = random.create(111111,999999);
+        const emailConfirmationCode = randomInteger(111111,999999);
         return emailConfirmationCode;
     }
     catch(err)
