@@ -14,6 +14,7 @@ import { Op, Sequelize } from "sequelize";
 import sequelize from "../helpers/database/dbConnection.js";
 import { sendSms } from "../helpers/smsHelper/smsHelper.js";
 import jsonwebtoken from "jsonwebtoken";
+import randomInteger from "random-int";
 
 export const firstOnBoarding = async(req, res, next) =>
 {
@@ -23,8 +24,9 @@ export const firstOnBoarding = async(req, res, next) =>
         if(!validateInputs(name, dateOfBirth, phone || email)) {
             return next(new CustomError(400, "Sure to filled all fields"))
         }
+        const key = phone||email; //email or phone gonna be passed into this variable
 
-        const user = await User.findOne({where: {phone:phone||null}}) || await User.findOne({where:{email:email||null}});
+        const user = await User.findOne({where: {phone:key}}) || await User.findOne({where:{email:key}});
 
         if(user && user.isRegisterCompleted == false) {
             const verificationCode = await createVerificationCode();
@@ -68,16 +70,49 @@ export const verify = async(req, res, next) =>
     try
     {
         const {verificationCode, email, phone} = req.body;
-        const user = await User.findOne({where: {phone:phone||null}}) || await User.findOne({where:{email:email||null}});
+        const key = email||phone;
+        if(!key){
+            return next(new CustomError(400, "Email and phone must be provided"));
+        }
+        const user = await User.findOne({where: {phone:key}}) || await User.findOne({where:{email:key}});
         if(!user) {
             return next(new CustomError(400, "There is no user with provided email or phone"))
         }
         if(user.verificationCode != verificationCode || user.verificationCodeExpires < Date.now()) {
             return next(new CustomError(400, "Your verification code wrong or expired"));
         };
-        await user.update({isVerified:true, verificationCode:null, verificationCodeExpires:null});
+
+        const chars = {
+            'ü': 'u',
+            'ö': 'o',
+            'ı': 'i',
+            'ş': 's',
+            'ç': 'c',
+            'g': 'ğ',
+            "?": ""
+        };
+
+        let username = user.name.replaceAll(" ", "");
+        username = String(username.replace(/[üöışçg?]/g, m=>chars[m])).toLowerCase();
+        
+        let check = true;
+        while(check!=false){
+            const query = await sequelize.query(
+                `select username from Users where username like '${username}'`,
+                { type: Sequelize.QueryTypes.SELECT }
+            );
+
+            if(query.length == 0){
+                check=false;
+            }
+            else {
+                username = username + randomInteger(1111,9999);
+            }
+        }
+
+        await user.update({username:username,isVerified:true, verificationCode:null, verificationCodeExpires:null});
         const verifyToken = createJwt(user);
-        res.status(200).json({success:true, verifyToken:verifyToken});
+        res.status(200).json({success:true, verifyToken:verifyToken, username:username});
     }
     catch(err)
     {
@@ -93,12 +128,23 @@ export const finalOnBoarding = async(req, res, next) =>
         if(!validateInputs(username, password)){
             return next(new CustomError(400, "Fill the all fields"));
         }
-        
+        if(username){
+            if(!/^[a-zA-Z0-9$@$!%*?&#^-_. +]+$/.test(username)) {
+                return next(new CustomError(400, "Use English characters only"));
+            }
+        }
         jsonwebtoken.verify(verifyToken, process.env.JWT_SECRET_KEY, async function(err, decoded){
             if(err){
                 return next(err);
             }
             const user = await User.findByPk(decoded.id);
+            if(!user) {
+                return next(new CustomError(400, "Wrong Verification Token"));
+            }
+            const usernameCheck = await User.findOne({where: {username:username}});
+            if(usernameCheck && usernameCheck.id != decoded.id){
+                return next(new CustomError(400, "There is a user with that username. Choose another one"));
+            }
             await user.update({username:username, password:password, isRegisterCompleted:true});
             return res.status(200).json({success:true})
         });
