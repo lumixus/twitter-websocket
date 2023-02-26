@@ -158,8 +158,6 @@ export const finalOnBoarding = async(req, res, next) =>
 
 export const login = async(req, res, next) =>
 {
-
-    // attributes: { exclude: ['password'] }
     try
     {
         const {username, password} = req.body;
@@ -271,7 +269,6 @@ export const forgotPassword = async(req, res, next) =>
         }
         createResetPasswordToken(user, next);
         const url = `http://localhost:8080/auth/resetpassword?resetPasswordToken=${user.resetPasswordToken}`;
-        //mail options can add to a function
         const mailOptions = {
             from: process.env.SMTP_USER,
             to: email,
@@ -283,7 +280,6 @@ export const forgotPassword = async(req, res, next) =>
     }
     catch(err)
     {
-        //make reset password token and expires null
         return next(err);
     }
 }
@@ -302,7 +298,6 @@ export const resetPassword = async(req,res,next) =>
     }   
     catch(err)
     {
-        //make reset password token and expires null
         return next(err);
     }
 }
@@ -318,8 +313,7 @@ export const changePassword = async(req, res, next) =>
         if(!comparePasswords(oldPassword, user.password))
         return next(new CustomError(400, "Old password is not correct"));
         await user.update({password: password});
-        // logout(req, res ,next); //fresh login
-        res.status(200).json({success:true, message: "Your password has been changed"});
+        res.cookie("access_token", null).status(200).json({success:true, message:"Your password has been changed"});
     }
     catch(err)
     {
@@ -342,8 +336,7 @@ export const deactiveAccount = async(req, res, next) =>
             return next(new CustomError(400, "Check your credentials"))
         }
         await user.update({isActive:false});
-        res.status(200).json({success:true, message:"Your account deactivated"});
-        // logout(req, res,next);
+        res.cookie("access_token", null).status(200).json({success:true, message:"Your account has been deactivated"});
     }
     catch(err)
     {
