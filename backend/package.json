@@ -25,7 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.8.0",
-    "random-numbers": "^1.0.8",
+    "random-int": "^3.0.0",
     "randomstring": "^1.2.3",
     "sequelize": "^6.27.0",
     "sms-service": "^1.1.7",
