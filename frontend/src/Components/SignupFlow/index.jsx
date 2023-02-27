@@ -12,6 +12,7 @@ const SignupFlow = () => {
 
     const [step, setStep] = useState(0)
     const [showEmail, setShowEmail] = useState(true)
+    const [currentUsername, setCurrentUsername] = useState("");
     const [verificationCode, setVerificationCode] = useState("");
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
@@ -21,6 +22,7 @@ const SignupFlow = () => {
     const [year, setYear] = useState("")
     const [day, setDay] = useState("")
     const [verifyToken, setVerifyToken] = useState("")
+    const [currentPicture, setCurrentPicture] = useState("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png");
 
 
     const [loading, setLoading] = useState(false);
@@ -41,6 +43,17 @@ const SignupFlow = () => {
         if(step > 0){
             setStep(step - 1);
         }
+    }
+    
+    const openFilePicker = () => {
+        const picturePicker = document.getElementById("picturePicker");
+
+        picturePicker.click();
+       
+    }
+
+    const pictureChangeHandler = (e) => {
+        setCurrentPicture(URL.createObjectURL(e.target.files[0]));
     }
 
     const sendVerificationCode = async () => {
@@ -65,7 +78,23 @@ const SignupFlow = () => {
     const sendPassword = async () => {
         try {
             const {data} = await axios.post("http://localhost:8080/auth/finalonboarding", {password: password, verifyToken: verifyToken});
-            console.log(data);
+            
+            if(data.success){
+                setStep(6);
+                setCurrentUsername(data.username);
+            }
+        } catch (error) {
+            setError(error);
+        }
+    }
+
+    const updateUsername = async () => {
+        try {
+            const {data} = await axios.post("http://localhost:8080/user/update", {username: currentUsername, verifyToken: verifyToken});
+            
+            if(data.success){
+                window.location.reload();
+            }
         } catch (error) {
             setError(error);
         }
@@ -263,9 +292,50 @@ let fifthStep = <div className='p-4'>
     </Button>
 </div>
 
+
+let sixthStep = <div className='p-4 d-flex flex-column justify-content-center'>
+    <div style={{height: "200px", width: "200px"}}>
+        <img style={{borderRadius: "50%", maxHeight: "100%", maxWidth: "100%"}} src={currentPicture} alt="Profile picture" />
+    </div>
+    <input onChange={(e) => pictureChangeHandler(e)} id="picturePicker" type="file" style={{display: "none"}} placeholder='Password' />
+    <Button
+    className='mt-4 w-100'
+    style={{width: "100%", height: "50px", borderRadius: "20px"}}
+    variant='primary'
+    onClick={() => openFilePicker()}>
+        Change Profile Picture
+    </Button>
+    <Button
+    className='mt-4 w-100'
+    style={{width: "100%", height: "50px", borderRadius: "20px"}}
+    variant='primary'
+    onClick={() => setStep(7)}>
+        Next
+    </Button>
+</div>
+
+let seventhStep = <div className='p-4 d-flex flex-column justify-content-center'>
+
+    <input onChange={(e) => setCurrentUsername(e.target.value)} className='loginInput' type="text" placeholder='Username' />
+    <Button
+    className='mt-4 w-100'
+    style={{width: "100%", height: "50px", borderRadius: "20px"}}
+    variant='primary'
+    onClick={() => {}}>
+        Cancel
+    </Button>
+    <Button
+    className='mt-4 w-100'
+    style={{width: "100%", height: "50px", borderRadius: "20px"}}
+    variant='primary'
+    onClick={() => updateUsername()}>
+        Update
+    </Button>
+</div>
+
 let CurrentStepElement = ""
 
-let StepCount = step > 0 ? <>
+let StepCount = step > 0 && step < 6 ? <>
 <p onClick={prevStep} style={{position: "absolute", top:"10px", right: "10px"}}>Back</p>
 <h5 style={{position: "absolute", top: "10px", left : "70px"}}>Step {step} of 5</h5>
 
@@ -290,6 +360,12 @@ let StepCount = step > 0 ? <>
         break;
         case 5:
             CurrentStepElement = fifthStep;
+            break;
+        case 6:
+            CurrentStepElement = sixthStep;
+            break;
+        case 7:
+            CurrentStepElement = seventhStep;
             break;
 
         default:
