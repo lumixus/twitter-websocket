@@ -3,6 +3,7 @@ import authRoutes from "./auth.js";
 import adminRoutes from "./admin.js";
 import tweetRoutes from "./tweet.js";
 import hashtagRoutes from "./hashtag.js";
+import userRoutes from "./user.js";
 import express from "express";
 import { isAuth } from "../middlewares/auth/auth.js";
 import { search,index } from "../controllers/index.js";
@@ -14,5 +15,6 @@ router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
 router.use("/tweet", tweetRoutes);
 router.use("/hashtag", hashtagRoutes);
+router.use("/user",userRoutes);
 
 export default router;
