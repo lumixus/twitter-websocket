@@ -95,7 +95,7 @@ const SignupFlow = () => {
 
     const sendPassword = async () => {
         try {
-            const {data} = await axios.post("http://localhost:8080/auth/finalonboarding", {password: password, verifyToken: verifyToken});
+            const {data} = await axios.post("http://localhost:8080/auth/finalonboarding", {password: password, verifyToken: verifyToken}, {withCredentials:true, credentials:"include"});
             
             if(data.success){
                 setStep(6);
