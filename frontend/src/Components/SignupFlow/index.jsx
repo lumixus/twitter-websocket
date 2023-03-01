@@ -98,8 +98,9 @@ const SignupFlow = () => {
             const {data} = await axios.post("http://localhost:8080/auth/finalonboarding", {password: password, verifyToken: verifyToken}, {withCredentials:true, credentials:"include"});
             
             if(data.success){
+                
                 setStep(6);
-                setCurrentUsername(data.username);
+                setCurrentUsername(data.data.username);
             }
         } catch (error) {
             setError(error);
@@ -108,7 +109,7 @@ const SignupFlow = () => {
 
     const updateUsername = async () => {
         try {
-            const {data} = await axios.post("http://localhost:8080/user/edit", {username: currentUsername},{withCredentials: true});
+            const {data} = await axios.put("http://localhost:8080/user/edit", {username: currentUsername},{withCredentials: true});
             
             if(data.success){
                 window.location.reload();
