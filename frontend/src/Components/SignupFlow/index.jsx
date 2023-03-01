@@ -108,7 +108,7 @@ const SignupFlow = () => {
 
     const updateUsername = async () => {
         try {
-            const {data} = await axios.post("http://localhost:8080/user/update", {username: currentUsername, verifyToken: verifyToken});
+            const {data} = await axios.post("http://localhost:8080/user/edit", {username: currentUsername},{withCredentials: true});
             
             if(data.success){
                 window.location.reload();
@@ -334,7 +334,7 @@ let sixthStep = <div className='p-4 d-flex flex-column justify-content-center'>
 
 let seventhStep = <div className='p-4 d-flex flex-column justify-content-center'>
 
-    <input onChange={(e) => setCurrentUsername(e.target.value)} className='loginInput' type="text" placeholder='Username' />
+    <input onChange={(e) => setCurrentUsername(e.target.value)} className='loginInput' type="text" defaultValue={currentUsername} placeholder='Username' />
     <Button
     className='mt-4 w-100'
     style={{width: "100%", height: "50px", borderRadius: "20px"}}
