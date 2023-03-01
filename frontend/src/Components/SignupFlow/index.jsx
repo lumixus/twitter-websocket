@@ -23,6 +23,7 @@ const SignupFlow = () => {
     const [day, setDay] = useState("")
     const [verifyToken, setVerifyToken] = useState("")
     const [currentPicture, setCurrentPicture] = useState("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png");
+    const [imageObject, setImageObject] = useState();
 
 
     const [loading, setLoading] = useState(false);
@@ -53,7 +54,23 @@ const SignupFlow = () => {
     }
 
     const pictureChangeHandler = (e) => {
+        setImageObject(e.target.files[0]);
         setCurrentPicture(URL.createObjectURL(e.target.files[0]));
+    }
+
+    const updateProfilePicture = async () => {
+        try {
+            const fd = new FormData();
+            fd.append('file', imageObject);
+            const {data} = await axios.post("http://localhost:8080/user/upload", fd, {withCredentials: true, headers: {
+                'Content-Type': 'multipart/form-data'
+            }})
+            if(data.success === true){
+                setStep(7);
+            }
+        } catch (error) {
+            console.log(error);       
+        }
     }
 
     const sendVerificationCode = async () => {
@@ -61,10 +78,11 @@ const SignupFlow = () => {
         setError("");
 
         try {
-            const {data} = await axios.post("http://localhost:8080/auth/verify", {verificationCode})
+            const {data} = await axios.post("http://localhost:8080/auth/verify", {verificationCode, email: email, phone: phone})
 
             if(data.success === true){
                 setVerifyToken(data.verifyToken);
+                setStep(5);
             }
 
         } catch (error) {
@@ -309,7 +327,7 @@ let sixthStep = <div className='p-4 d-flex flex-column justify-content-center'>
     className='mt-4 w-100'
     style={{width: "100%", height: "50px", borderRadius: "20px"}}
     variant='primary'
-    onClick={() => setStep(7)}>
+    onClick={() => updateProfilePicture()}>
         Next
     </Button>
 </div>
