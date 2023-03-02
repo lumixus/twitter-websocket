@@ -18,9 +18,7 @@ const Homepage = () => {
 
         setTweetsLoading(true)
 
-        const {data} = await axios.get("http://localhost:8080/auth/profile", {headers : {
-            authorization : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJsdW1peHVzIiwiaWF0IjoxNjcxOTAxMTg3LCJleHAiOjE2NzI0MTcxODd9.tZwjQVxbXBAd5stziCa2N0CE7oe7qLFCI-LtcFRK_QU"
-        }})
+        const {data} = await axios.get("http://localhost:8080/user/profile", {withCredentials: true})
 
         setTweets(data.tweets)
         setTweetsLoading(false)

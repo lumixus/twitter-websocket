@@ -7,8 +7,8 @@ initialState : {
     user: {}
 },
 reducers : {
-    setUser: state => {
-        state.user = {username : "emirtaskin"}
+    setUser: (state, action) => {
+        state.user = action.payload;
     }
 }
 })
