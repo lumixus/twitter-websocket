@@ -1,16 +1,15 @@
 import React from 'react'
 import styles from './NotifyBanner.module.css'
 import { Button, Col, Row } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
 const NotifyBanner = ({loginButtonEvent = () => {}, signUpButtonEvent = () => {}}) => {
 
 
+const user = useSelector(state => state.user);
 
 
-
-
-
-  return (
+  return Object.keys(user.user).length <= 0 ? (
     <div className={styles.notifyBanner}>
         <Row>
             <Col md={8} className={styles.infoText}>
@@ -23,7 +22,7 @@ const NotifyBanner = ({loginButtonEvent = () => {}, signUpButtonEvent = () => {}
             </Col>
         </Row>
     </div>
-  )
+  ) : null
 }
 
 export default NotifyBanner

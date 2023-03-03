@@ -4,7 +4,6 @@ import LeftBar from './Components/LeftBar';
 import RightBar from './Components/RightBar';
 import TopNav from './Components/TopNav';
 import Modal from './Components/Modal'
-import { useSelector } from 'react-redux';
 import NotifyBanner from './Components/NotifyBanner';
 import { useState } from 'react';
 import LoginFlow from './Components/LoginFlow';
@@ -12,7 +11,7 @@ import SignupFlow from './Components/SignupFlow';
 
 const App = ({element}) => {
 
-  const userState = useSelector((state) => state.user)
+
 
   const [isLoginModalOpened, setIsLoginModalOpened] = useState(false)
   const [isSignupModalOpened, setIsSignupModalOpened] = useState(false)
@@ -58,7 +57,7 @@ const App = ({element}) => {
       </div>
 
 
-    {Object.keys(userState).length > 0 ? null : <NotifyBanner loginButtonEvent={openLoginModal} signUpButtonEvent={openSignupModal} />}
+     <NotifyBanner loginButtonEvent={openLoginModal} signUpButtonEvent={openSignupModal} />
     </>
   )
 }

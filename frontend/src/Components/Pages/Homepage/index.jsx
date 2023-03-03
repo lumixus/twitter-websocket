@@ -5,32 +5,19 @@ import styles from './Homepage.module.css'
 import axios from "axios"
 import { useEffect } from 'react'
 import { Button } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { getTweetFeed } from '../../../Store/Actions/tweetActions'
 
 const Homepage = () => {
-
-    const [tweets, setTweets] = useState([])
-    const [tweetsLoading, setTweetsLoading] = useState(true)
-
+    
+    const dispatch = useDispatch();
     const userState = useSelector((state) => state.user)
-
-    const getTweets = async () => {
-
-        setTweetsLoading(true)
-
-        const {data} = await axios.get("http://localhost:8080/user/profile", {withCredentials: true})
-
-        setTweets(data.tweets)
-        setTweetsLoading(false)
-
-    }
+    const {tweets, loading} = useSelector(state => state.tweet)
 
 
     useEffect(() => {
-        if(tweets.length === 0){
-            getTweets()
-        }
-    }, [tweets])
+        dispatch(getTweetFeed());
+    }, [])
 
 
     const autoGrow = (e) => {
@@ -71,7 +58,7 @@ const Homepage = () => {
         <hr />
 
 
-        {tweetsLoading ? 
+        {loading ? 
         "Loading..." : 
         tweets ? tweets.map(t => <TweetCard tweet={t} key={t.id} />) : null}
 

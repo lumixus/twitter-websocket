@@ -1,5 +1,5 @@
 import express from "express";
-import { firstOnBoarding, verify,finalOnBoarding,login,logout,forgotPassword,resetPassword,changePassword,deactiveAccount,emailConfirmation,follow,unfollow } from "../controllers/auth.js";
+import { firstOnBoarding, verify,finalOnBoarding,login,logout,forgotPassword,resetPassword,changePassword,deactiveAccount,emailConfirmation,follow,unfollow, getUserWithCookie } from "../controllers/auth.js";
 import { isAuth } from "../middlewares/auth/auth.js";
 import { isUserExist } from "../middlewares/database/queryHelpers.js";
 
@@ -17,4 +17,6 @@ router.post("/deactive", isAuth, deactiveAccount);
 router.get("/emailconfirmation", emailConfirmation);
 router.post("/follow", [isAuth,isUserExist], follow);
 router.post("/unfollow", [isAuth,isUserExist], unfollow);
+router.get("/getUser", [isAuth], getUserWithCookie);
+
 export default router;

@@ -6,13 +6,15 @@ import { Button } from 'react-bootstrap';
 import AppleIcon from '../SVGS/AppleIcon';
 import { useState } from 'react';
 import axios from 'axios';
-import {setUser} from "../../Store";
+import { useDispatch } from 'react-redux'
+import {getUser} from "../../Store/Actions/userActions"
 
 const LoginFlow = () => {
 
     const [key, setKey] = useState('')
     const [password, setPassword] = useState('')
     const [step, setStep] = useState(0)
+    const dispatch = useDispatch();
 
     let currentElement = null;
 
@@ -22,7 +24,7 @@ const LoginFlow = () => {
       {withCredentials: true})
 
       if(data.success === true){
-        setUser(data.user);
+        dispatch(getUser());
       }
     }
 

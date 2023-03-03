@@ -299,3 +299,11 @@ export const unfollow = async(req, res, next) =>
         return next(err);
     }
 }
+
+export const getUserWithCookie = async (req, res, next) => {
+    try {
+        res.status(200).json({success: true, user: req.user});
+    } catch (err) {
+        return next(err);
+    }
+}

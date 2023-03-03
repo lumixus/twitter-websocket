@@ -20,17 +20,17 @@ export const index = async (req, res, next) =>
     try
     {
         const followingUsers = [];
-        const following = await Follow.findAll({attributes:["FollowerId"], where: {FollowingId:req.user.id}});
+        const following = await Follow.findAll({attributes:["FollowingId"], where: {FollowerId:req.user.id}});
         for(var follow of following)
         {
-            followingUsers.push(follow.FollowerId);
+            followingUsers.push(follow.FollowingId);
         }
         const response = await sequelize.query(`select 
-        Tweets.id, Tweets.content, Tweets.image, Tweets.favoriteCount, Tweets.mentionCount,
-        Users.username, Users.firstName, Users.lastName, Users.profilePicture
+        Tweets.id, Tweets.content, Tweets.image, Tweets.favoriteCount, Tweets.mentionCount, Tweets.createdAt,
+        Users.username, Users.name, Users.profilePicture
         from Tweets 
         left join Users on Tweets.UserId = Users.id 
-        where Tweets.UserID in (${followingUsers})`, { type: Sequelize.QueryTypes.SELECT })
+        where Tweets.UserID in (${followingUsers.toString()})`, { type: Sequelize.QueryTypes.SELECT })
         res.status(200).json({success:true, data:response});
     }
     catch(err)

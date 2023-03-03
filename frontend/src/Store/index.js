@@ -1,27 +1,9 @@
-import {createSlice, configureStore} from "@reduxjs/toolkit"
-
-
-const userSlice = createSlice({
-name : "user",
-initialState : {
-    user: {}
-},
-reducers : {
-    setUser: (state, action) => {
-        state.user = action.payload;
-    }
-}
-})
+import {configureStore} from "@reduxjs/toolkit"
+import rootReducer from "./Reducers/reducer";
 
 const store = configureStore({
-reducer : userSlice.reducer
+reducer : rootReducer
 })
-
-
-export const {setUser} = userSlice.actions
 
 
 export default store
-
-
-

@@ -10,13 +10,16 @@ import store from './Store';
 // Import Main Styles
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Auth from './Auth/Auth';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <GoogleOAuthProvider clientId="<your_client_id>">
-        <RouterProvider router={router} />  
+        <Auth>
+          <RouterProvider router={router} />
+        </Auth>
       </GoogleOAuthProvider>
     </Provider>
   </React.StrictMode>

@@ -20,7 +20,9 @@ export const isAuth = (req, res, next) =>
                 id: decoded.id,
                 username: decoded.username,
             };
-            const user = await User.findOne({where:{username:req.user.username}, attributes:["id"]});
+            const user = await User.findOne({
+                where:{username:req.user.username},
+                attributes:["id"]});
             if(!user)
             {
                 return next(new CustomError(401, "There is no username in the database"));
