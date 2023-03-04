@@ -20,15 +20,17 @@ export const feed = async (req, res, next) =>
         const followingUsers = [];
         
         const following = await Follow.findAll({
-            attributes:["FollowerId"], 
-            where: {followingId: req.user.id}, 
+            attributes:["FollowingId"], 
+            where: {FollowerId: req.user.id}, 
             raw:true,
         });
 
         for(var follow of following)
         {
-            followingUsers.push(follow.FollowerId);
+            followingUsers.push(follow.FollowingId);
         }
+
+        console.log(following);
 
         const query = await Tweet.findAll({
             attributes:["id", "content", "createdAt", "favoriteCount", "mentionCount"],
