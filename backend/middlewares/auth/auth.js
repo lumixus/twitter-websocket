@@ -34,25 +34,38 @@ export const isAuth = (req, res, next) =>
 
 export const adminAccess = async (req, res, next) =>
 {
-    const user = await User.findOne({where:{id:req.user.id}, attributes:["role"]});
-    if(user.role != "admin")
-    {
+    const user = await User.findOne({
+        where:{
+            id:req.user.id
+        }, 
+        attributes:["role"]
+    });
+    
+    if(user.role != "admin") {
         return next(new CustomError(403, "Only admins can access to this route"));
     }
+    
     next();
 } 
 
 export const getTweetOwnerAccess = async(req, res, next) =>
 {
     const {tweet_id} = req.body;
-    const tweet = await Tweet.findOne({where: {id:tweet_id}, attributes:["UserId"]});
-    if(!tweet)
-    {
+
+    const tweet = await Tweet.findOne({
+        where: {
+            id:tweet_id
+        }, 
+        attributes:["UserId"]
+    });
+    
+    if(!tweet){
         return next(new CustomError(400, "There is no tweet with that id"));
     }
-    if(tweet.UserId != req.user.id)
-    {
+
+    if(tweet.UserId != req.user.id){
         return next(new CustomError(403, "You are not owner of this tweet"));
     }
+    
     next();
 }

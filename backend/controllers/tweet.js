@@ -6,13 +6,22 @@ export const createTweet = async(req, res, next) =>
 {
     try
     {
-        //tweet dönüyor
         const {content} = req.body;
+        
         const fileName = imageUploader(req, next);
-        if(content == null && fileName == null)
-        return next(new CustomError(400, "Content or File must be provided"));
-        const tweet = await Tweet.create({content:content,UserId:req.user.id, image:fileName});
+        
+        if(content == null && fileName == null) {
+            return next(new CustomError(400, "Content or File must be provided"));
+        }
+        
+        const tweet = await Tweet.create({
+            content:content,
+            UserId:req.user.id,
+            image:fileName
+        });
+        
         createHashtag(tweet, next);
+        
         res.status(200).json({success:true, data:tweet});
     }
     catch(err)
@@ -23,12 +32,21 @@ export const createTweet = async(req, res, next) =>
 
 export const getTweetById = async(req, res, next) =>
 {
-    //tweet dönüyor
     try
     {
         const {tweet_id} = req.body;
-        // const tweet = await Tweet.findByPk(tweet_id);
-        const tweet = await Tweet.findOne({where: {id:tweet_id}, attributes:["id","content", "image", "UserId", "createdAt"]});
+        
+        const tweet = await Tweet.findOne({
+            where: {id:tweet_id}, 
+            attributes:[
+                "id",
+                "content", 
+                "image", 
+                "UserId", 
+                "createdAt"
+            ]
+        });
+        
         res.status(200).json({success:true, data:tweet});
     }
     catch(err)
@@ -42,9 +60,18 @@ export const deleteTweet = async(req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
-        // const tweet = await Tweet.findByPk(tweet_id);
-        const tweet = await Tweet.findOne({where:{id:tweet_id}, attributes:["id", "isVisible", "hidByUser"]});
+
+        const tweet = await Tweet.findOne({
+            where: {id:tweet_id}, 
+            attributes:[
+                "id", 
+                "isVisible", 
+                "hidByUser"
+            ]
+        });
+
         await tweet.update({isVisible: false, hidByUser:true});
+
         res.status(200).json({success:true, message:"Your tweet has been deleted"});
     }
     catch(err)

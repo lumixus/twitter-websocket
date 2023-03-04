@@ -3,8 +3,6 @@ import Mention from "../models/Mention.js";
 import Tweet from "../models/Tweet.js";
 import User from "../models/User.js";
 import Follow from "../models/Follow.js";
-import sequelize from "../helpers/database/dbConnection.js";
-import Favorite from "../models/Favorite.js";
 
 export const search = async(req, res, next) =>
 {

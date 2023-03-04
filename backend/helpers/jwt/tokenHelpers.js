@@ -15,13 +15,15 @@ const sendJwtToCookie = (user, res) =>
 {
     const {COOKIE_EXPIRES} = process.env;
     const token = createJwt(user);
+
     const userInformation = {
         username: user.username,
         email: user.email,
         phone: user.phone
     }
 
-    res.cookie("access_token", token, {maxAge:COOKIE_EXPIRES * 60 * 1000, httpOnly:true})
+    res
+    .cookie("access_token", token, {maxAge:COOKIE_EXPIRES * 60 * 1000, httpOnly:true})
     .status(200)
     .json({success:true, data: userInformation, access_token:token});
 }

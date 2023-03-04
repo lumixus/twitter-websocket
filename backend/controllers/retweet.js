@@ -25,12 +25,25 @@ export const undoReTweet = async (req, res, next) =>
     try
     {
         const {tweet_id} = req.body;
+
         let {mention_id} = req.body;
-        if(mention_id===undefined)
-        mention_id=null
-        if(!await Retweet.count({where: {UserId:req.user.id, TweetId:tweet_id, MentionId: mention_id}})) 
-        return next(new CustomError(400, "You already did not retweet this"));
-        await Retweet.destroy({where: {UserId:req.user.id, TweetId:tweet_id, MentionId: mention_id}});
+        
+        if(mention_id===undefined){
+            mention_id=null
+        }
+
+        const query = await Retweet.count({where: {UserId:req.user.id, TweetId:tweet_id, MentionId: mention_id}})
+
+        if(!query){
+            return next(new CustomError(400, "You already did not retweet this"));
+        } 
+
+        await Retweet.destroy({where: {
+            UserId:req.user.id,
+            TweetId:tweet_id,
+            MentionId: mention_id
+        }});
+        
         res.status(200).json({success:true, message:"Undo retweet successfull"});
     }
     catch(err)

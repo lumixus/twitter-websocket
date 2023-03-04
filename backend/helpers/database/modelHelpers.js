@@ -15,7 +15,12 @@ export const createResetPasswordToken = async(user, next) =>
     try
     {
         const resetPasswordToken = createRandomToken();
-        await user.update({resetPasswordToken:resetPasswordToken, resetPasswordTokenExpires:new Date(Date.now() + 1 * 60 * 60 * 1000)});
+
+        await user.update({
+            resetPasswordToken:resetPasswordToken, 
+            resetPasswordTokenExpires:new Date(Date.now() + 1 * 60 * 60 * 1000)
+        });
+        
         return user.resetPasswordToken;
     }
     catch(err)

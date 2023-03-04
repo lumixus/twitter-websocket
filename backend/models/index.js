@@ -4,6 +4,7 @@ import Mention from "./Mention.js"
 import Favorite from "./Favorite.js";
 import Retweet from "./Retweet.js";
 import Bookmark from "./Bookmark.js";
+import sequelize from "../helpers/database/dbConnection.js"
 
 Tweet.belongsTo(User, {
     foreignKey: {
@@ -100,5 +101,7 @@ Bookmark.belongsTo(Mention, {
     through:"BookmarkMention",
     onDelete:"CASCADE"
 });
+
+await sequelize.sync().then(() => console.log("Associations sync")).catch((err) => console.log(err));
 
 export {Mention, Tweet, User, Favorite, Retweet, Bookmark}

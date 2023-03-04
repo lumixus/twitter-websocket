@@ -7,6 +7,7 @@ import Tweet from "../models/Tweet.js";
 import Mention from "../models/Mention.js";
 import Favorite from "../models/Favorite.js";
 import Bookmark from "../models/Bookmark.js";
+import Retweet from "../models/Retweet.js";
 
 
 export const editProfile = async(req, res, next) =>
@@ -27,34 +28,96 @@ export const editProfile = async(req, res, next) =>
     }
 }
 
+//--
+
 export const profile = async(req, res, next) =>
 {
     try
     {
         const {user_id} = req.body;
-        const user = await User.findOne({where: {isActive:true, id:user_id}, attributes:["id","name", "username","dateOfBirth","createdAt","profilePicture", "location", "biography","website"]});
-        const tweets = await Tweet.findAll({where: {UserId: user_id, isVisible:true}, attributes:["id", "content", "image","createdAt"]});
-        const mentions = await Mention.findAll({where: {UserId: user_id, isVisible:true}, attributes:["id", "content", "image", "createdAt", "TweetId"]});
-        const favorites = await sequelize.query(` 
-        select 
-        Tweets.id as TweetId, Tweets.content as TweetContent, Tweets.image as TweetImage, Tweets.mentionCount, Tweets.favoriteCount as TweetFavCount,
-        Mentions.id as MentionId, Mentions.image as MentionImage, Mentions.content as MentionContent, Mentions.favoriteCount as MentionFavCount
-        from Favorites 
-        left join Tweets on Tweets.Id = Favorites.TweetId 
-        left join Mentions on Mentions.Id = Favorites.MentionId
-        where Favorites.UserId = ${user.id}`, { type: Sequelize.QueryTypes.SELECT });
-        const retweets = await sequelize.query(`
-        select
-        Tweets.id as TweetId, Tweets.content as TweetContent, Tweets.image as TweetImage, 
-        Users.name as Name, Users.username as Username, Users.profilePicture as ProfilePicture
-        from Retweets
-        left join Tweets on Tweets.Id = Retweets.TweetId
-        left join Users on Users.id = Tweets.UserId
-        where Retweets.UserId = ${user.id}`, { type: Sequelize.QueryTypes.SELECT })
-        res.status(200).json({success:true,user:user, tweets:tweets, mentions:mentions,favorites:favorites, retweets:retweets});
+    
+        const user = await User.findOne({
+            where: {
+                isActive:true, 
+                id:user_id
+            }, 
+            attributes:[
+                "id",
+                "name",
+                "username",
+                "dateOfBirth",
+                "createdAt",
+                "profilePicture",
+                "location",
+                "biography",
+                "website"
+            ]
+        });
+
+        const tweets = await Tweet.findAll({
+            where: {
+                UserId: user_id, 
+                isVisible:true
+            }, 
+            attributes:[
+                "id", 
+                "content", 
+                "image",
+                "createdAt"
+            ]
+        });
+        
+        const retweets = await Retweet.findAll({
+            where:{
+                UserId:user_id
+            },
+            raw:true,
+            include: [
+                {
+                    model:Tweet
+                }
+            ]
+        });
+
+        res.status(200).json({success:true,user:user, tweets:tweets,retweets:retweets});
     }
     catch(err)
     {
+        return next(err);
+    }
+}
+
+export const getMentions = async(req ,res ,next) => {
+    try{
+        const {user_id} = req.body;
+
+        const mentions = await Mention.findAll({
+            attributes:[
+                "id",
+                "content",
+                "image",
+                "UserId",
+                "TweetId",
+                "favoriteCount",
+                "createdAt"
+            ],
+            where: {
+                UserId:user_id
+            },
+            include: {
+                model:User,
+                attributes: [
+                    "id",
+                    "name",
+                    "username",
+                    "profilePicture",
+                ]
+            }
+        });
+
+        return res.status(200).json({success:true, mentions:mentions});
+    }
+    catch(err){
         return next(err);
     }
 }
@@ -112,21 +175,25 @@ export const bookmarks = async(req, res, next)=>
     }
 }
 
+//--
 export const favorites = async(req, res, next) =>
 {
     try
     {
-        const tweetIds = [];
-        const mentionIds= [];
-        const favorites = await Favorite.findAll({where: {UserId:req.user.id}, attributes:["id", "UserId", "MentionId", "TweetId"]});
-        for(var favorite of favorites)
-        {
-            tweetIds.push(favorite.TweetId);
-            mentionIds.push(favorite.MentionId);
-        }
-        const tweets = await Tweet.findAll({where: {id: {[Op.in]: tweetIds}}, attributes:["id","content", "image", "createdAt"]});
-        const mentions = await Mention.findAll({where: {id:{[Op.in]:mentionIds}}, attributes:["id", "content", "image","createdAt"]});
-        res.status(200).json({success:true, data:{tweets:tweets, mentions:mentions}});
+        const {user_id} = req.body;
+
+        const favorites = await Favorite.findAll({
+            where: {
+                UserId:user_id
+            },
+            raw:true,
+            include: {
+                model:Tweet,
+            }
+        });
+
+        res.status(200).json({success:true, data:favorites});
+
     }   
     catch(err)
     {
