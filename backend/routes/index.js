@@ -6,10 +6,10 @@ import hashtagRoutes from "./hashtag.js";
 import userRoutes from "./user.js";
 import express from "express";
 import { isAuth } from "../middlewares/auth/auth.js";
-import { search,index } from "../controllers/index.js";
+import { search,feed } from "../controllers/index.js";
 
 const router = express.Router();
-router.get("/", isAuth, index);
+router.get("/feed", isAuth, feed);
 router.get("/search", isAuth, search);
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);

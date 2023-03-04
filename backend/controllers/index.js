@@ -5,7 +5,7 @@ import User from "../models/User.js";
 import Follow from "../models/Follow.js";
 import sequelize from "../helpers/database/dbConnection.js";
 import Favorite from "../models/Favorite.js";
-// import { exampleName } from "../helpers/database/modelHelpers.js";
+
 export const search = async(req, res, next) =>
 {
     const {search} = req.query;
@@ -15,22 +15,22 @@ export const search = async(req, res, next) =>
     res.status(200).json({success:true, users:users, tweets: tweets, mentions: mentions});
 }
 
-export const index = async (req, res, next) =>
+export const feed = async (req, res, next) =>
 {
     try
     {
         const followingUsers = [];
-        const following = await Follow.findAll({attributes:["FollowingId"], where: {FollowerId:req.user.id}});
+        const following = await Follow.findAll({attributes:["FollowerId"], where: {followingId: req.user.id}, raw:true});
         for(var follow of following)
         {
-            followingUsers.push(follow.FollowingId);
+            followingUsers.push(follow.FollowerId);
         }
         const response = await sequelize.query(`select 
         Tweets.id, Tweets.content, Tweets.image, Tweets.favoriteCount, Tweets.mentionCount, Tweets.createdAt,
         Users.username, Users.name, Users.profilePicture
         from Tweets 
         left join Users on Tweets.UserId = Users.id 
-        where Tweets.UserID in (${followingUsers.toString()})`, { type: Sequelize.QueryTypes.SELECT })
+        where Tweets.UserId in (${followingUsers.toString()})`, { type: Sequelize.QueryTypes.SELECT });
         res.status(200).json({success:true, data:response});
     }
     catch(err)
