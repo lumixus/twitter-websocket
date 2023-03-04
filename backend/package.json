@@ -15,6 +15,7 @@
   "author": "Emir Taskin and Tumer Altunbas",
   "license": "ISC",
   "dependencies": {
+    "app-root-path": "^3.1.0",
     "aws-sdk": "^2.1290.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",

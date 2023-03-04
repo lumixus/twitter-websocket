@@ -9,7 +9,7 @@ import fileUpload from "express-fileupload";
 import limiter from "./middlewares/security/rateLimit.js";
 import cors from "cors"
 import cookieParser from "cookie-parser";
-
+import root from "app-root-path";
 
 const app = express(); //creating an app from express's constructor
 const httpServer = createServer(app); //creating a http server that listens to server ports and gives a response back to the client.
@@ -18,9 +18,11 @@ const wss = new WebSocketServer({server:httpServer});
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
-}))
+}));
+
 app.use(cookieParser())
 app.use(express.json()); //it parses the request and we can reach informations from req.body
+app.use(express.static(root.path + '\\public'));
 app.use(fileUpload({limits: {fileSize:5*1024*1024}})); //file upload middleware
 app.use(limiter);
 app.use("/", routes); //our app's route schema
