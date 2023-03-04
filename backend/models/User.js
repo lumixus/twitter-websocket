@@ -131,6 +131,10 @@ const User = sequelize.define("User",
         type: DataTypes.BOOLEAN,
         defaultValue:false,
     },
+    isVerifiedByTwitter: {
+        type: DataTypes.BOOLEAN,
+        defaultValue:false
+    },
     isRegisterCompleted: {
         type: DataTypes.BOOLEAN,
         defaultValue:false
