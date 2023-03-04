@@ -20,18 +20,32 @@ export const feed = async (req, res, next) =>
     try
     {
         const followingUsers = [];
-        const following = await Follow.findAll({attributes:["FollowerId"], where: {followingId: req.user.id}, raw:true});
+        
+        const following = await Follow.findAll({
+            attributes:["FollowerId"], 
+            where: {followingId: req.user.id}, 
+            raw:true,
+        });
+
         for(var follow of following)
         {
             followingUsers.push(follow.FollowerId);
         }
-        const response = await sequelize.query(`select 
-        Tweets.id, Tweets.content, Tweets.image, Tweets.favoriteCount, Tweets.mentionCount, Tweets.createdAt,
-        Users.username, Users.name, Users.profilePicture
-        from Tweets 
-        left join Users on Tweets.UserId = Users.id 
-        where Tweets.UserId in (${followingUsers.toString()})`, { type: Sequelize.QueryTypes.SELECT });
-        res.status(200).json({success:true, data:response});
+
+        const query = await Tweet.findAll({
+            attributes:["id", "content", "createdAt", "favoriteCount", "mentionCount"],
+            where: {
+                UserId:followingUsers,
+                isVisible:true
+            },  
+            raw:true, 
+            include: [{
+                model:User,
+                attributes:["id", "name", "username", "profilePicture", "isVerified", "isVerifiedByTwitter"]
+            }]
+        });
+
+        res.status(200).json({success:true, data:query});
     }
     catch(err)
     {
