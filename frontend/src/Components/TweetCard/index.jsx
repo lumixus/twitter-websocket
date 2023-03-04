@@ -16,7 +16,7 @@ const TweetCard = ({tweet}) => {
             <div className={styles.topSide}>
                 <div style={{display:"flex", flexDirection:"row"}}>
                     <p style={{fontWeight:"bold"}}>{tweet.name}</p> 
-                    <span style={{marginLeft:"10px"}}>@{tweet.User.username}</span>
+                    <span style={{marginLeft:"10px"}}>@{tweet.username}</span>
                     <span style={{marginLeft:"5px"}}>·</span>
                     <span style={{marginLeft:"5px"}}>{moment(tweet.createdAt).fromNow()}</span>
                 </div>
