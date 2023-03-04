@@ -131,18 +131,15 @@ const User = sequelize.define("User",
         type: DataTypes.BOOLEAN,
         defaultValue:false,
     },
+    isVerifiedByTwitter: {
+        type: DataTypes.BOOLEAN,
+        defaultValue:false
+    },
     isRegisterCompleted: {
         type: DataTypes.BOOLEAN,
         defaultValue:false
     }
 });
-
-// User.addHook("beforeCreate", async function(user)
-// {
-
-//     const hash = hashPassword(user.password);
-//     user.password = hash;
-// });
 
 User.addHook("afterUpdate", async function(user)
 {
@@ -175,8 +172,6 @@ User.addHook("beforeUpdate",async function(user)
     }
 });
 
-
-
 await sequelize.sync().then(()=> console.log("User sync done")).catch(err=>console.log(err));
-// pay attention is active gonna have a default value
+
 export default User;
