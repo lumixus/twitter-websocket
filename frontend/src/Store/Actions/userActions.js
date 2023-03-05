@@ -9,3 +9,14 @@ export const getUser = () => async (dispatch) => {
         dispatch({type: "GET_USER", payload: {}});
     }
 }
+
+
+export const logoutUser = () => async (dispatch) => {
+    try {
+        dispatch({type: "LOGOUT_REQUEST"})
+        const {data} = await axios.get("http://localhost:8080/auth/logout", {withCredentials: true});
+        dispatch({type: "LOGOUT_SUCCESS"})
+    } catch (error) {
+        console.log(error);
+    }
+}

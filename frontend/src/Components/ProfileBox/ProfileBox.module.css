@@ -5,8 +5,7 @@
     padding: 1rem 0rem;
     transition-duration: 0.5s;
     border-radius: 20px;
-
-
+    position: relative;
 }
 
 .boxWrapper:hover{
@@ -15,19 +14,23 @@
 }
 
 .boxWrapper > .profilePicture{
-    width: 30%;
+    width: 20%;
+    height: 50px;
     display: flex;
     justify-content: center;
+    align-items: center;
     
 }
 
 .profilePicture > img {
+    max-width: 100%;
+    max-height: 100%;
     border-radius: 50%;
 }
 
 
 .boxWrapper > .middleSection{
-    width: 50%;
+    width: 60%;
     padding: 0rem 0.5rem;
 }
 
@@ -37,4 +40,26 @@
     justify-content: center;
     width: 20%;
     align-items: center;
+}
+
+
+.profileBoxMenu {
+    position: absolute;
+    width: 200px;
+    border: 1px solid gray;
+    top: -70px;
+    padding: 0.4rem 0rem;
+    border-radius:10px;
+}
+
+.logoutButton{
+    background-color: black;
+    color: white;
+    width: 100%;
+    display: flex;
+    justify-content: left;
+}
+
+.logoutButton:hover{
+    background-color: gray;
 }
