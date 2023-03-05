@@ -27,4 +27,29 @@
     justify-content: space-between;
 }
 
+.bottomSide{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.tweetIcons > div{
+    display: flex;
+    align-items: center;
+}
+
+.tweetIcons > div > .iconValue{
+    margin-left: 0.3rem;
+}
+
+.tweetIcons{
+    width: 100%;
+    padding: 0rem 10rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 
