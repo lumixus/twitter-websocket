@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import style from "./ProfileBox.module.css";
 
 
@@ -12,9 +14,9 @@ const ProfileBox = ({user}) => {
         </div>
         <div className={style.middleSection}>
             <div>{user.name}</div>
-            <div>@{user.username}</div>
+            <div style={{color: "rgb(113, 118, 123)"}}>@{user.username}</div>
         </div>
-        <div className={style.icon}>Icon</div>
+        <div className={style.icon}><FontAwesomeIcon icon={faEllipsis} /></div>
     </div>
   )
 }
