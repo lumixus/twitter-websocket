@@ -20,6 +20,8 @@ const sendJwtToCookie = (user, res) =>
     const token = createJwt(user);
 
     const userInformation = {
+        name: user.name,
+        profilePicture: user.profilePicture,
         username: user.username,
         email: user.email,
         phone: user.phone

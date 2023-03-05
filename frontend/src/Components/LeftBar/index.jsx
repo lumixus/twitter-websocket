@@ -74,10 +74,8 @@ const userState = useSelector((state) => state.user)
             </>}
           </div>
         </div>
-        <div>
-          {Object.keys(userState).length === 0 ? "" : 
-          <ProfileBox user={userState.user} />
-        }
+        <div style={{width: "70%"}}>
+          {Object.keys(userState.user).length === 0 ? "" : <ProfileBox user={userState.user} />}
         </div>
     </div>
   )

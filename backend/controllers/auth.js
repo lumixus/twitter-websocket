@@ -184,7 +184,9 @@ export const login = async(req, res, next) =>
             attributes: [
                 "id",
                 "username", 
-                "email", 
+                "email",
+                "name",
+                "profilePicture", 
                 "phone", 
                 "password", 
                 "isActive"

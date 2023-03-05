@@ -1,3 +1,25 @@
 .boxWrapper{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.boxWrapper > .profilePicture{
+    width: 20%;
     
+}
+
+.profilePicture > img {
+    border-radius: 50%;
+}
+
+
+.boxWrapper > .middleSection{
+    width: 60%;
+    padding: 0rem 0.5rem;
+}
+
+
+.boxWrapper > .icon{
+    width: 20%;
 }
