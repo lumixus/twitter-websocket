@@ -19,6 +19,9 @@ export const isAuth = (req, res, next) =>
             req.user = {
                 id: decoded.id,
                 username: decoded.username,
+                profilePicture: decoded.profilePicture,
+                name: decoded.name,
+                email: decoded.email
             };
             const user = await User.findOne({
                 where:{username:req.user.username},

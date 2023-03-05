@@ -6,7 +6,10 @@ const createJwt = (user) =>
     const {JWT_SECRET_KEY, JWT_EXPIRES} = process.env;
     const payload = {
         id: user.id,
-        username: user.username
+        username: user.username,
+        profilePicture: user.profilePicture,
+        email: user.email,
+        name: user.name
     };
     return jsonwebtoken.sign(payload, JWT_SECRET_KEY, {expiresIn:JWT_EXPIRES});
 }

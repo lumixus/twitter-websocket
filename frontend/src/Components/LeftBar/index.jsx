@@ -6,6 +6,7 @@ import { faBell, faBookmark, faEllipsisH, faEnvelope, faGear, faHashtag, faHome,
 import { Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import TwitterIcon from '../SVGS/TwitterIcon'
+import ProfileBox from '../ProfileBox'
 
 const LeftBar = () => {
 
@@ -75,7 +76,7 @@ const userState = useSelector((state) => state.user)
         </div>
         <div>
           {Object.keys(userState).length === 0 ? "" : 
-          "Profile section"
+          <ProfileBox user={userState.user} />
         }
         </div>
     </div>

@@ -25,6 +25,7 @@ const LoginFlow = () => {
 
       if(data.success === true){
         dispatch(getUser());
+        window.location.reload();
       }
     }
 
