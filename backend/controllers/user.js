@@ -8,6 +8,7 @@ import Mention from "../models/Mention.js";
 import Favorite from "../models/Favorite.js";
 import Bookmark from "../models/Bookmark.js";
 import Retweet from "../models/Retweet.js";
+import Follow from "../models/Follow.js";
 
 
 export const editProfile = async(req, res, next) =>
@@ -80,6 +81,80 @@ export const profile = async(req, res, next) =>
         });
 
         res.status(200).json({success:true,user:user, tweets:tweets,retweets:retweets});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+export const follow = async (req, res, next) =>
+{
+    try
+    {
+        const {user_id} = req.body;
+
+        const query = await Follow.findOne({
+            where: {
+                FollowerId:user_id, 
+                FollowingId: req.user.id
+            }
+        });
+        
+        if(query){
+            return next(new CustomError(400, "You are already following this user"));
+        }
+        
+        if(user_id == req.user.id) {
+            return next(new CustomError(400, "You can not follow yourself"));
+        }
+
+        const follow = await Follow.create({
+            FollowerId: user_id, 
+            FollowingId:req.user.id
+        });
+        
+        res
+        .status(200)
+        .json({success:true, data:follow});
+    }
+    catch(err)
+    {
+        return next(err);
+    }
+}
+
+export const unfollow = async(req, res, next) =>
+{
+    try
+    {
+        const {user_id} = req.body;
+
+        const query = await Follow.findOne({
+            where: {
+                FollowerId:user_id, 
+                FollowingId: req.user.id
+            }
+        });
+        
+        if(!query){
+            return next(new CustomError(400, "You are already not following this user"));
+        }
+
+        if(user_id == req.user.id) {
+            return next(new CustomError(400, "You can not unfollow yourself"));
+        }
+
+        await Follow.destroy({
+            where:{ 
+                FollowerId: user_id, 
+                FollowingId:req.user.id
+            }
+        });
+        
+        res
+        .status(200)
+        .json({success:true, message:"Unfollow successfull"});
+
     }
     catch(err)
     {

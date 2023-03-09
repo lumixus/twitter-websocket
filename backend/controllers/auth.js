@@ -4,7 +4,6 @@ import CustomError from "../helpers/error/CustomError.js";
 import { comparePasswords, validateInputs } from "../helpers/input/inputHelpers.js";
 import { createVerificationCode, createResetPasswordToken } from "../helpers/database/modelHelpers.js";
 import { createMailOptions, mailHelper } from "../helpers/mailHelper/mailHelper.js";
-import Follow from "../models/Follow.js";
 import { Op } from "sequelize";
 import { sendSms } from "../helpers/smsHelper/smsHelper.js";
 import jsonwebtoken from "jsonwebtoken";
@@ -414,80 +413,6 @@ export const emailConfirmation = async(req, res, next) =>
     }
 }
 
-export const follow = async (req, res, next) =>
-{
-    try
-    {
-        const {user_id} = req.body;
-
-        const query = await Follow.findOne({
-            where: {
-                FollowerId:user_id, 
-                FollowingId: req.user.id
-            }
-        });
-        
-        if(query){
-            return next(new CustomError(400, "You are already following this user"));
-        }
-        
-        if(user_id == req.user.id) {
-            return next(new CustomError(400, "You can not follow yourself"));
-        }
-
-        const follow = await Follow.create({
-            FollowerId: user_id, 
-            FollowingId:req.user.id
-        });
-        
-        res
-        .status(200)
-        .json({success:true, data:follow});
-    }
-    catch(err)
-    {
-        return next(err);
-    }
-}
-
-export const unfollow = async(req, res, next) =>
-{
-    try
-    {
-        const {user_id} = req.body;
-
-        const query = await Follow.findOne({
-            where: {
-                FollowerId:user_id, 
-                FollowingId: req.user.id
-            }
-        });
-        
-        if(!query){
-            return next(new CustomError(400, "You are already not following this user"));
-        }
-
-        if(user_id == req.user.id) {
-            return next(new CustomError(400, "You can not unfollow yourself"));
-        }
-
-        await Follow.destroy({
-            where:{ 
-                FollowerId: user_id, 
-                FollowingId:req.user.id
-            }
-        });
-        
-        res
-        .status(200)
-        .json({success:true, message:"Unfollow successfull"});
-
-    }
-    catch(err)
-    {
-        return next(err);
-    }
-}
 
 export const getUserWithCookie = async (req, res, next) => {
     try {    
