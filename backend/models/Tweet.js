@@ -31,6 +31,10 @@ const Tweet = sequelize.define("Tweet", {
         type: DataTypes.INTEGER,
         defaultValue:0
     },
+    retweetCount: {
+        type: DataTypes.INTEGER,
+        defaultValue:0
+    },
     UserId: {
         type:DataTypes.INTEGER,
         allowNull: false
