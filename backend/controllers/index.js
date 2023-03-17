@@ -33,12 +33,14 @@ export const feed = async (req, res, next) =>
         console.log(following);
 
         const query = await Tweet.findAll({
-            attributes:["id", "content", "createdAt", "favoriteCount", "mentionCount"],
+            attributes:["id", "content", "createdAt", "favoriteCount", "mentionCount", "retweetCount"],
             where: {
                 UserId:followingUsers,
                 isVisible:true
-            },  
-            raw:true, 
+            },
+            order:[
+                ['createdAt', 'DESC']
+            ],  
             include: [{
                 model:User,
                 attributes:["id", "name", "username", "profilePicture", "isVerified", "isVerifiedByTwitter"]

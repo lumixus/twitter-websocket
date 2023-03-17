@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
 import userReducer from "./userReducer";
 import tweetReducer from "./tweetReducer";
+import profileFeedReducer from "./profileFeedReducer";
+import createTweetReducer from "./createTweetReducer";
 
 
 
@@ -8,7 +10,9 @@ import tweetReducer from "./tweetReducer";
 
 const rootReducer = combineReducers({
     user: userReducer,
-    tweet: tweetReducer
+    tweet: tweetReducer,
+    profile: profileFeedReducer,
+    createTweet: createTweetReducer
 })
 
 

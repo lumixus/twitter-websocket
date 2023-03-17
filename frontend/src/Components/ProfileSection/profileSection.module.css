@@ -1,0 +1,36 @@
+.profileSectionWrapper{
+    height: 400px;
+    width: 100%;
+    border-bottom: 2px solid gray;
+    margin-bottom: 2rem;
+}
+
+.profileBanner{
+    background-color: rgb(58, 57, 57);
+    height: 200px;
+}
+
+.profileInfoSection{
+    padding: 1.5rem;
+}
+
+.profileInfoUpper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.profilePictureWrapper > img{
+    border-radius: 50%;
+    width: 25%;
+    box-shadow: rgba(255, 255, 255, 0.03) 0px 0px 2px inset;
+    position: absolute;
+    top: -100px;
+}
+
+.profilePictureWrapper{
+    height: 50px;
+    width: 50px;
+}

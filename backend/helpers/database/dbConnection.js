@@ -16,7 +16,13 @@ if(process.env.NODE_ENV == 'development'){
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
     host: DB_HOST,
     dialect: "mysql",
-    port: DB_PORT
+    port: DB_PORT,        
+    define: {
+        charset: 'utf8mb4',
+        dialectOptions: {
+            collate: 'utf8mb4_general_ci'
+        }
+    }
 });
 
 try

@@ -1,4 +1,4 @@
-import {Tweet, Mention, User} from "../models/index.js";
+import {Tweet, User} from "../models/index.js";
 import { imageUploader } from "../helpers/imageUploader/imageUploader.js";
 import CustomError from "../helpers/error/CustomError.js";
 import { createHashtag } from "./hashtag.js";
@@ -6,23 +6,40 @@ export const createTweet = async(req, res, next) =>
 {
     try
     {
-        const {content} = req.body;
+        const {content, parentId} = req.body;
         
         const fileName = imageUploader(req, next);
         
         if(content == null && fileName == null) {
             return next(new CustomError(400, "Content or File must be provided"));
         }
-        
+
         const tweet = await Tweet.create({
             content:content,
+            parentId: parentId ?? 0,
             UserId:req.user.id,
             image:fileName
         });
+
+        const response = await Tweet.findOne({
+            where: {id:tweet.id}, 
+            attributes:[
+                "id",
+                "content", 
+                "image", 
+                "UserId", 
+                "createdAt"
+            ],
+            include: [{
+                model:User,
+                attributes:["id", "name", "username", "profilePicture", "isVerified", "isVerifiedByTwitter"]
+            }]
+        });
+
         
         createHashtag(tweet, next);
         
-        res.status(200).json({success:true, data:tweet});
+        res.status(200).json({success:true, data:response});
     }
     catch(err)
     {
@@ -44,7 +61,11 @@ export const getTweetById = async(req, res, next) =>
                 "image", 
                 "UserId", 
                 "createdAt"
-            ]
+            ],
+            include: [{
+                model:User,
+                attributes:["id", "name", "username", "profilePicture", "isVerified", "isVerifiedByTwitter"]
+            }]
         });
         
         res.status(200).json({success:true, data:tweet});

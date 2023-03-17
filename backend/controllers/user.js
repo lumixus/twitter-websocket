@@ -40,7 +40,7 @@ export const profile = async(req, res, next) =>
         const user = await User.findOne({
             where: {
                 isActive:true, 
-                id:user_id
+                username:user_id
             }, 
             attributes:[
                 "id",
@@ -57,15 +57,25 @@ export const profile = async(req, res, next) =>
 
         const tweets = await Tweet.findAll({
             where: {
-                UserId: user_id, 
+                UserId: user.id, 
                 isVisible:true
-            }, 
+            },
+            order:[
+                ['createdAt', 'DESC']
+            ],
             attributes:[
                 "id", 
-                "content", 
+                "content",
+                "retweetCount",
+                "favoriteCount",
+                "mentionCount",
                 "image",
                 "createdAt"
-            ]
+            ],
+            include: [{
+                model:User,
+                attributes:["id", "name", "username", "profilePicture", "isVerified", "isVerifiedByTwitter"]
+            }]
         });
         
         const retweets = await Retweet.findAll({

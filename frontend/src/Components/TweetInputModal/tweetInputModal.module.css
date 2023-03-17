@@ -1,0 +1,46 @@
+.backgroundOverlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(91, 112, 131, 0.4);
+    z-index: 999;
+}
+
+.closeIcon{
+    position: relative;
+    top: 0;
+    left:20px;
+    cursor: pointer;
+    transition-duration: 0.5s;
+    opacity: 0.5;
+    width: 2rem;
+}
+
+.closeIcon:hover{
+opacity: 1;
+}
+
+.tweetInputWrapper{
+    min-width: 500px;
+    background-color: black;
+    border-radius: 20px;
+    z-index: 999;
+    padding: 1rem 0rem;
+}
+
+.handleCloseArea{
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100%;
+    width: 100%;
+}

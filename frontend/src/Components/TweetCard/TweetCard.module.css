@@ -3,6 +3,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 0 20px;
+    z-index: -1;
 }
 
 
@@ -33,6 +34,9 @@
     justify-content: center;
     align-items: center;
     margin-top: 20px;
+    border-bottom: 1px solid rgb(47, 51, 54);
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
 }
 
 .tweetIcons > div{

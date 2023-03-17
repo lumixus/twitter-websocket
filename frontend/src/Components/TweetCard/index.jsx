@@ -3,6 +3,7 @@ import styles from './TweetCard.module.css'
 import moment from "moment"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faEllipsis, faComment, faRetweet, faHeart} from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
 
 
 const TweetCard = ({tweet}) => {
@@ -15,10 +16,10 @@ const TweetCard = ({tweet}) => {
         <div className={styles.rightSide}>
             <div className={styles.topSide}>
                 <div style={{display:"flex", flexDirection:"row"}}>
-                    <p style={{fontWeight:"bold"}}>{tweet["User.name"]}</p> 
-                    <span style={{marginLeft:"10px"}}>@{tweet["User.username"]}</span>
-                    <span style={{marginLeft:"5px"}}>·</span>
-                    <span style={{marginLeft:"5px"}}>{moment(tweet.createdAt).fromNow()}</span>
+                    <p style={{fontWeight:"bold"}}><Link style={{color: "white"}} to={`/${tweet.User.username}`}>{tweet.User.name}</Link></p> 
+                    <span style={{marginLeft:"10px", color: "gray"}}>@{tweet.User.username}</span>
+                    <span style={{marginLeft:"5px", color: "gray"}}>·</span>
+                    <span style={{marginLeft:"5px", color: "gray"}}>{moment(tweet.createdAt).fromNow()}</span>
                 </div>
                 <div>
                     <FontAwesomeIcon icon={faEllipsis} />
@@ -45,7 +46,6 @@ const TweetCard = ({tweet}) => {
             </div>
         </div>
     </div>
-    <hr />
     </>
   )
 }

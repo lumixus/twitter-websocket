@@ -19,7 +19,7 @@ const Tweet = sequelize.define("Tweet", {
         allowNull:true
     },
     createdAt : {
-        type:DataTypes.DATE,
+        type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
         allowNull:false
     },
@@ -36,19 +36,27 @@ const Tweet = sequelize.define("Tweet", {
         defaultValue:0
     },
     UserId: {
-        type:DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     isVisible: {
-        type:DataTypes.BOOLEAN,
+        type: DataTypes.BOOLEAN,
         defaultValue: true,
         allowNull:false
     },
+    parentId:{
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: true
+    },
     hidByUser: {
-        type:DataTypes.BOOLEAN,
+        type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull:false
     }
+}, {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci'
 });
 
 

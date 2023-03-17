@@ -3,14 +3,18 @@ import styles from "./LeftBar.module.css"
 import {Link} from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faBookmark, faEllipsisH, faEnvelope, faGear, faHashtag, faHome, faList, faUser } from '@fortawesome/free-solid-svg-icons'
-import { Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import TwitterIcon from '../SVGS/TwitterIcon'
 import ProfileBox from '../ProfileBox'
+import TweetInputModal from '../TweetInputModal'
 
 const LeftBar = () => {
 
 const userState = useSelector((state) => state.user)
+
+const openTweetInputModal = () => {
+
+}
 
 
 
@@ -19,7 +23,9 @@ const userState = useSelector((state) => state.user)
         <div>
           <div className={styles.linksWrapper}>
             <div style={{width:"250px", marginBottom:"30px"}}>
-              <TwitterIcon style={{fill:"currentColor", height: "32px"}} />
+              <Link to={"/"}>
+                <TwitterIcon style={{fill:"currentColor", height: "32px"}} />
+              </Link>
             </div>
             {Object.keys(userState).length === 0 ? 
             <>
@@ -58,7 +64,7 @@ const userState = useSelector((state) => state.user)
               <FontAwesomeIcon style={{marginRight:"20px"}} icon={faList}/>
               Lists
             </Link>
-            <Link to={"/"}>
+            <Link to={`/${userState.user.username}`}>
             <FontAwesomeIcon style={{marginRight:"20px"}} icon={faUser}/>
               Profile
             </Link>
@@ -67,10 +73,7 @@ const userState = useSelector((state) => state.user)
               More
             </Link>
 
-
-            <Button style={{borderRadius:"20px", padding: "10px", fontSize:"20px", marginTop:"20px"}}>
-              Tweet
-            </Button>
+              <TweetInputModal />
             </>}
           </div>
         </div>

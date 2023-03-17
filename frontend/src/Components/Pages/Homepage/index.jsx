@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getTweetFeed } from '../../../Store/Actions/tweetActions'
+import TweetInput from '../../TweetInput'
 
 const Homepage = () => {
     
@@ -20,41 +21,10 @@ const Homepage = () => {
     }, [])
 
 
-    const autoGrow = (e) => {
-
-    e.target.style.cssText = 'height:auto; padding:0;'
-    e.target.style.cssText = 'height:' + e.target.scrollHeight + 'px';
-
-    }
-
-
-
-
   return (
     <div className={styles.main}>
-    {Object.keys(userState).length !== 0 ? 
 
-
-        <div className={styles.tweetEditor}>
-            <div className={styles.profilePic}>
-            Image
-            </div>
-
-
-            <div className={styles.tweetArea}>
-                <textarea onChange={(e) => autoGrow(e)} rows={1} placeholder="What's happening?"></textarea>
-                <div className={styles.tweetEditorBottom}>
-                    <div>
-                        buttons
-                    </div>
-                    <div>
-                        <Button style={{borderRadius:"20px"}}>Tweet</Button>
-                    </div>
-                </div>
-            </div>
-        </div>
-            : ""}
-
+        <TweetInput />
         <hr />
 
 

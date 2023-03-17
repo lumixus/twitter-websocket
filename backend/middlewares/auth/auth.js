@@ -8,6 +8,7 @@ export const isAuth = (req, res, next) =>
 {
     const {JWT_SECRET_KEY} = process.env;
     const token = getToken(req);
+    console.log("token is :" + token);
     jsonwebtoken.verify(token, JWT_SECRET_KEY, async(err, decoded)=>
     {
         if(err)

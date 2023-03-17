@@ -1,10 +1,11 @@
 import React from 'react'
 import styles from './Footer.module.css'
+import moment from 'moment'
 
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-        &copy; 2022 Twitter Clone, Inc.
+        &copy; {moment().year()} Twitter Clone, Inc.
     </footer>
   )
 }
